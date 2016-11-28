@@ -1,0 +1,40 @@
+{
+  "name": "electron-blog-1",
+  "version": "1.0.0",
+  "description": "preparing components for blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --config webpack.config.js --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "imports-loader": "^0.6.5",
+    "node-sass": "^3.8.0",
+    "postcss-assets": "^4.1.0",
+    "postcss-loader": "^0.9.1",
+    "progress-bar-webpack-plugin": "^1.9.0",
+    "sass-loader": "^4.0.0",
+    "sass-resources-loader": "^1.0.2",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
+    "webpack-glsl-loader": "^1.0.1",
+    "webpack-notifier": "^1.3.0"
+  },
+  "dependencies": {
+    "assert": "^1.4.1",
+    "react": "^15.3.2",
+    "react-codemirror": "^0.2.6",
+    "react-dom": "^15.3.2",
+    "react-json-tree": "^0.10.0",
+    "react-native-listener": "^1.0.1"
+  }
+}
