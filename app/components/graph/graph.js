@@ -8,14 +8,12 @@ import InfoLegend from './InfoLegend';
 class Graph extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props.data);
         this.nodeRadius = 10;
         this.state = { focus: this.props.focus };
         this.setUpData();
     }
 
     setUpData() {
-        console.log('setUpData');
 
         this.tempData = Object.assign({}, this.props.data);
 
@@ -97,9 +95,13 @@ class Graph extends React.Component {
         };
 
         let node = ReactDOM.findDOMNode(this);
+        let firstMove = false;
 
         function zoom() {
-            d3.select(node).select('#childg').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            if (firstMove) {
+                d3.select(node).select('#childg').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            }
+            firstMove = true;
         }
 
         d3.select(node).select('#topg').call(d3.behavior.zoom().scaleExtent([0, 8]).on("zoom", zoom))
@@ -226,25 +228,6 @@ class Graph extends React.Component {
             })
             .attr('cy', (d) => {
                 return d.y;
-            })
-            .attr('x', (d) => {
-                if (d.type === 'ip') {
-                    return d.x - this.nodeRadius;
-                }
-            })
-            .attr('y', (d) => {
-                if (d.type === 'ip') {
-                    return d.y - this.nodeRadius;
-                }
-            })
-            .attr('transform', (d) => {
-                if (d.type === 'ip') {
-                    return 'rotate(45, ' + d.x + ', ' + d.y + ')';
-                } else if (d.type === 'email') {
-                    return 'translate(' + (d.x - this.nodeRadius) + ', ' + (d.y - this.nodeRadius) + ')';
-                } else if (d.type === 'hash') {
-                    return 'translate(' + (d.x - this.nodeRadius) + ', ' + (d.y - this.nodeRadius) + ')scale(1.9)';
-                }
             });
 
         this.updateLinks();
@@ -434,22 +417,18 @@ class Graph extends React.Component {
                     <svg width={this.props.width} height={this.props.height + 25} className={'graphSvg'}>
                         <g id='topg'>
                             <rect className="overlay" width={this.props.width} height={this.props.height + 25}></rect>
-                            <g id='childg' transform={'translate(' + 0 + ', ' + 12 + ')'}>
+                            <g id='childg' transform={"translate(438.6486388701302,174.30117220919993)scale(0.06020386837625951)"}>
                                 <path id='depth0' stroke='transparent' fill='none' d={d3.svg.line().tension(.4).interpolate('cardinal')(depth0)}></path>
                                 <g>
-                                    <text fill='gray' dy='0' x={depth1[0][0]} y={depth1[0][1]} textAnchor='middle' >Depth 1</text>
                                     <path id='depth1' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test}></path>
                                 </g>
                                 <g>
-                                    <text fill='gray' dy='0' x={depth2[0][0]} y={depth1[0][1]} textAnchor='middle' >Depth 2</text>
                                     <path id='depth2' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test2}></path>
                                 </g>
                                 <g>
-                                    <text fill='gray' dy='0' x={depth2[0][0]} y={depth1[0][1]} textAnchor='middle' >Depth 3</text>
                                     <path id='depth3' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test3}></path>
                                 </g>
                                 <g>
-                                    <text fill='gray' dy='0' x={depth2[0][0]} y={depth1[0][1]} textAnchor='middle' >Depth 4</text>
                                     <path id='depth4' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test4}></path>
                                 </g>
 
@@ -484,15 +463,17 @@ class Node extends React.Component {
 
         let symbol;
 
-        if (this.props.type === 'ip') {
-            symbol = <rect fill={this.props.color || '#80A6D8'} width={this.props.r * 2 * 0.85} height={this.props.r * 2 * 0.85} className={'depth' + this.props.depth + ' point'} x={this.props.cx - this.props.r * 0.85} y={this.props.cy - this.props.r * 0.85} transform={'rotate(45, ' + this.props.cx + ', ' + this.props.cy + ')'}/>;
-        } else if (this.props.type === 'domain') {
-            symbol = <circle className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} cx={this.props.cx} cy={this.props.cy} r={this.props.r}/>;
-        } else if (this.props.type === 'email') {
-            symbol = <polygon transform={'translate(' + (this.props.cx - this.props.r) + ', ' + (this.props.cy - this.props.r) + ')'} className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} x={this.props.cx} y={this.props.cy} points="11,0 22,8 17.8,20.9 4.2,20.9 0,8 "/>;
-        } else if (this.props.type === 'hash') {
-            symbol = <path width={this.props.r * 2} height={this.props.r * 2} className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} x={this.props.cx} y={this.props.cy} transform={'translate(' + (this.props.cx - this.props.r) + ', ' + (this.props.cy - this.props.r) + ')scale(1.9)'} d="M7.16.82h0a1.23,1.23,0,0,0,1.69.7h0a1.23,1.23,0,0,1,1.64,1.64h0a1.23,1.23,0,0,0,.7,1.69h0a1.23,1.23,0,0,1,0,2.32h0a1.23,1.23,0,0,0-.7,1.69h0a1.23,1.23,0,0,1-1.64,1.64h0a1.23,1.23,0,0,0-1.69.7h0a1.23,1.23,0,0,1-2.32,0h0a1.23,1.23,0,0,0-1.69-.7h0A1.23,1.23,0,0,1,1.52,8.85h0a1.23,1.23,0,0,0-.7-1.69h0a1.23,1.23,0,0,1,0-2.32h0a1.23,1.23,0,0,0,.7-1.69h0A1.23,1.23,0,0,1,3.15,1.52h0A1.23,1.23,0,0,0,4.84.82h0A1.23,1.23,0,0,1,7.16.82Z"/>;
-        }
+        // if (this.props.type === 'ip') {
+        //     symbol = <rect fill={this.props.color || '#80A6D8'} width={this.props.r * 2 * 0.85} height={this.props.r * 2 * 0.85} className={'depth' + this.props.depth + ' point'} x={this.props.cx - this.props.r * 0.85} y={this.props.cy - this.props.r * 0.85} transform={'rotate(45, ' + this.props.cx + ', ' + this.props.cy + ')'}/>;
+        // } else if (this.props.type === 'domain') {
+        //     symbol = <circle className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} cx={this.props.cx} cy={this.props.cy} r={this.props.r}/>;
+        // } else if (this.props.type === 'email') {
+        //     symbol = <polygon transform={'translate(' + (this.props.cx - this.props.r) + ', ' + (this.props.cy - this.props.r) + ')'} className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} x={this.props.cx} y={this.props.cy} points="11,0 22,8 17.8,20.9 4.2,20.9 0,8 "/>;
+        // } else if (this.props.type === 'hash') {
+        //     symbol = <path width={this.props.r * 2} height={this.props.r * 2} className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} x={this.props.cx} y={this.props.cy} transform={'translate(' + (this.props.cx - this.props.r) + ', ' + (this.props.cy - this.props.r) + ')scale(1.9)'} d="M7.16.82h0a1.23,1.23,0,0,0,1.69.7h0a1.23,1.23,0,0,1,1.64,1.64h0a1.23,1.23,0,0,0,.7,1.69h0a1.23,1.23,0,0,1,0,2.32h0a1.23,1.23,0,0,0-.7,1.69h0a1.23,1.23,0,0,1-1.64,1.64h0a1.23,1.23,0,0,0-1.69.7h0a1.23,1.23,0,0,1-2.32,0h0a1.23,1.23,0,0,0-1.69-.7h0A1.23,1.23,0,0,1,1.52,8.85h0a1.23,1.23,0,0,0-.7-1.69h0a1.23,1.23,0,0,1,0-2.32h0a1.23,1.23,0,0,0,.7-1.69h0A1.23,1.23,0,0,1,3.15,1.52h0A1.23,1.23,0,0,0,4.84.82h0A1.23,1.23,0,0,1,7.16.82Z"/>;
+        // }
+
+        symbol = <circle className={'depth' + this.props.depth + ' point'} fill={this.props.color || '#80A6D8'} cx={this.props.cx} cy={this.props.cy} r={this.props.r}/>;
 
         return (
             <g className={'node'}>

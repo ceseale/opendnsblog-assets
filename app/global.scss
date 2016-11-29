@@ -1,0 +1,41 @@
+#tree-container > ul {
+  background-color: black !important;
+  height: 340px;
+  width: 500px;
+  overflow: auto;
+}
+
+#fgraph-container {
+  canvas {
+    cursor: crosshair;
+    background-color: black;
+  }
+}
+
+#gui {
+  position: relative;
+  top: -900px;
+}
+
+#tree-container {
+  display: flex;
+  justify-content: center;
+}
+
+#graph-container {
+  display: flex;
+  justify-content: center;
+
+  svg {
+    cursor: crosshair;
+  }
+}
+
+#globe-container {
+  display: flex;
+  justify-content: center;
+
+  canvas {
+    cursor: crosshair;
+  } 
+}

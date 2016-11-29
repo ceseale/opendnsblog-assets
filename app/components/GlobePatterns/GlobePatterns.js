@@ -11,7 +11,7 @@ console.dir(THREE);
 class GlobePatterns extends React.Component {
   constructor(props) {
     super(props);
-    (function(){ var script = document.createElement('script');script.onload=function(){var stats=new Stats();document.getElementById('globalHolder').appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js';document.head.appendChild(script);})()
+    // (function(){ var script = document.createElement('script');script.onload=function(){var stats=new Stats();document.getElementById('globalHolder').appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js';document.head.appendChild(script);})()
 
     window.document.body.style.margin = 0;
     // const THREE.TrackballControls
@@ -24,6 +24,7 @@ class GlobePatterns extends React.Component {
   }
 
   componentDidMount() {
+    console.log(d3.select('.dg'));
     this.start();
   }
 
@@ -94,7 +95,7 @@ class GlobePatterns extends React.Component {
 
   start() {
       this.scene = new THREE.Scene();
-      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100);
+      this.camera = new THREE.PerspectiveCamera(45, this.props.width / this.props.height, 0.01, 100);
       this.camera.position.z = 1.5;
       this.renderer = new THREE.WebGLRenderer();
       this.renderer.setClearColor(0x000000, 1.0);
@@ -108,7 +109,7 @@ class GlobePatterns extends React.Component {
       this.pointCloudGeom = null;
       this.positions = [];
       this.sizes = null;
-      this.lineOpacity = 0.02;
+      this.lineOpacity = 0.102;
       this.colors = [];
       this.radius = 0.5;
       this.queryPathLines = null;
@@ -150,9 +151,13 @@ class GlobePatterns extends React.Component {
   }
 
   addGUI() {
-    let gui = new dat.GUI();
+    let gui = new dat.GUI( { autoPlace: false } );
+    gui.domElement.id = 'gui';
+    console.log(gui.domElement);
+
+    document.getElementById('globalHolder').appendChild(gui.domElement);
     const that = this;
-    gui.add({ queryPathLines: this.lineOpacity }, 'queryPathLines', 0, 1.0).name('Path Opacity').onChange(function(value) {
+    gui.add({ queryPathLines: this.lineOpacity }, 'queryPathLines', 0, 1.0).name('Edge Opacity').onChange(function(value) {
       that.queryPathLines.material.opacity = value;
     });
   }

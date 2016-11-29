@@ -19,7 +19,7 @@ class ForceDirectedGraph extends React.Component {
         }
         
         ended.bind(this)(data);
-        d3.select(node).call(d3.behavior.zoom().scaleExtent([0, 8]).on('zoom', zoom))
+        d3.select(node).select('canvas').call(d3.behavior.zoom().scaleExtent([0, 8]).on('zoom', zoom))
 
         function ended(data) {
             var nodes = data.nodes,
@@ -78,7 +78,6 @@ class ForceDirectedGraph extends React.Component {
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span className={'progress'} style={{ fontSize: '100px' }}></span>
               <canvas className={'graphContainer2'} width={this.props.width} height={this.props.height}></canvas>
             </div>
         );
