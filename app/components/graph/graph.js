@@ -414,10 +414,10 @@ class Graph extends React.Component {
         return (
             <div className={'graphContainer'}>
 
-                    <svg width={this.props.width} height={this.props.height + 25} className={'graphSvg'}>
+                    <svg width={this.props.width} height={this.props.height} className={'graphSvg'}>
                         <g id='topg'>
-                            <rect className="overlay" width={this.props.width} height={this.props.height + 25}></rect>
-                            <g id='childg' transform={"translate(438.6486388701302,174.30117220919993)scale(0.06020386837625951)"}>
+                            <rect className="overlay" width={this.props.width} height={this.props.height}></rect>
+                            <g id='childg' transform={"translate(413.96857357031234,178.45779808585965)scale(0.057831526752365754)"}>
                                 <path id='depth0' stroke='transparent' fill='none' d={d3.svg.line().tension(.4).interpolate('cardinal')(depth0)}></path>
                                 <g>
                                     <path id='depth1' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test}></path>

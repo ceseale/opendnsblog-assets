@@ -23,17 +23,17 @@ let App = {
         );
 
         ReactDOM.render(
-            <Graph width={900} height={340} codeRunCount={0} data={data} />,
+            <Graph width={800} height={340} codeRunCount={0} data={data} />,
             document.getElementById('graph-container')
         );
 
         ReactDOM.render(
-            <ForceGraph width={900} height={340} codeRunCount={0} data={data} />,
+            <ForceGraph width={800} height={340} codeRunCount={0} data={data} />,
             document.getElementById('fgraph-container')
         );
 
         ReactDOM.render(
-            <GlobePatterns width={900} height={900} codeRunCount={0} data={data} />,
+            <GlobePatterns width={800} height={800} codeRunCount={0} data={data} />,
             document.getElementById('globe-container')
         );
     }
