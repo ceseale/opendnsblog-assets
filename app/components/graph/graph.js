@@ -8,6 +8,7 @@ import InfoLegend from './InfoLegend';
 class Graph extends React.Component {
     constructor(props) {
         super(props);
+        console.log(this.props.data);
         this.nodeRadius = 10;
         this.state = { focus: this.props.focus };
         this.setUpData();
