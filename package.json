@@ -39,7 +39,7 @@
     "react-dom": "^15.3.2",
     "react-json-tree": "^0.10.0",
     "react-native-listener": "^1.0.1",
-    "three": "^0.82.1",
+    "three": "^0.70.0",
     "three-trackballcontrols": "0.0.5"
   }
 }

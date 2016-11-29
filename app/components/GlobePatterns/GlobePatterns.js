@@ -197,10 +197,10 @@ class GlobePatterns extends React.Component {
 
       }
     }
-
-    const earthImg = THREE.ImageUtils.loadTexture('./images/earth.jpg', THREE.UVMapping, () => {
-      const bumpMap = THREE.ImageUtils.loadTexture('./images/elevation.jpg', THREE.UVMapping, () => {
-        const waterSpec = THREE.ImageUtils.loadTexture('./images/water.png', THREE.UVMapping, () => {
+    THREE.ImageUtils.crossOrigin = '';
+    const earthImg = THREE.ImageUtils.loadTexture('https://rawgit.com/ceseale/opendnsblog-assets/master/images/earth.jpg', THREE.UVMapping, () => {
+      const bumpMap = THREE.ImageUtils.loadTexture('https://rawgit.com/ceseale/opendnsblog-assets/master/images/elevation.jpg', THREE.UVMapping, () => {
+        const waterSpec = THREE.ImageUtils.loadTexture('https://rawgit.com/ceseale/opendnsblog-assets/master/images/water.png', THREE.UVMapping, () => {
           that.scene.add(new THREE.Mesh(
             new THREE.SphereGeometry(radius, segments, segments),
             new THREE.MeshPhongMaterial({
