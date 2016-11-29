@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Graph from './components/graph/graph';
-
+import data from './data.json';
 
 let App = {
 
@@ -10,6 +10,7 @@ let App = {
      */
 
     run() {
+        console.log(data);
         // render aplication
         ReactDOM.render(
             <Graph/>,

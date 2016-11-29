@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import './graph.css';
+import './graph.scss';
 
 class Tester extends React.Component {
 

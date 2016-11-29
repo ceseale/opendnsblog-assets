@@ -18,6 +18,7 @@ var config = {
 
     module: {
         loaders: [
+            { test: /\.json$/, loader: 'json' },
             { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
             { test: /\.css$/, loader: 'style!css?importLoaders=1!postcss' },
             // Extract css files
@@ -42,6 +43,12 @@ var config = {
         }),
         new ExtractTextPlugin('bundle.css'),
         new webpack.optimize.OccurrenceOrderPlugin()
+        ,
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
     ]
 };
 
