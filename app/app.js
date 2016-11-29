@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Graph from './components/graph/graph';
+import ForceGraph from './components/forceGraph/ForceDirectedGraph';
 import data from './data.json';
 
 let App = {
@@ -10,10 +11,9 @@ let App = {
      */
 
     run() {
-        console.log(data);
         // render aplication
         ReactDOM.render(
-            <Graph/>,
+            <ForceGraph width={900} height={340} codeRunCount={0} data={data} />,
             document.getElementById('graph-container')
         );
     }

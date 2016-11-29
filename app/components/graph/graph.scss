@@ -1,3 +1,26 @@
-.graph {
-  background-color: transparent;
+.link {
+  fill: none;
+  stroke: white;
+  stroke-width: 1.5px;
+  opacity: 0.4;
+  marker-end: url(#end-arrow);
+}
+
+.infoLegend {
+  float: right;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.graphContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+}
+
+.node {
+  
 }
