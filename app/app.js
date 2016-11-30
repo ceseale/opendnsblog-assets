@@ -7,14 +7,18 @@ import data from './data.json';
 import globalStyle from './global.scss';
 import JSONTree from 'react-json-tree';
 
+
+
 let App = {
 
     /**
      * Run application
      */
 
-
     run() {
+
+        d3.selectAll('.vis-container').style('display', 'flex');
+
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication
         ReactDOM.render(
@@ -23,17 +27,17 @@ let App = {
         );
 
         ReactDOM.render(
-            <Graph width={800} height={340} codeRunCount={0} data={data} />,
+            <Graph width={760} height={340} codeRunCount={0} data={data} />,
             document.getElementById('graph-container')
         );
 
         ReactDOM.render(
-            <ForceGraph width={800} height={340} codeRunCount={0} data={data} />,
+            <ForceGraph width={760} height={340} codeRunCount={0} data={data} />,
             document.getElementById('fgraph-container')
         );
 
         ReactDOM.render(
-            <GlobePatterns width={800} height={800} codeRunCount={0} data={data} />,
+            <GlobePatterns width={760} height={760} codeRunCount={0} data={data} />,
             document.getElementById('globe-container')
         );
     }
