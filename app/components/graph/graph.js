@@ -330,13 +330,13 @@ class Graph extends React.Component {
                 });
             })
             .on('mouseleave', () => {
-                setTimeout(() => {
+                // setTimeout(() => {
 
-                    if (!inTip) {
-                        d3.select(node).selectAll('#graph-tooltip').remove();
-                    }
+                //     if (!inTip) {
+                //         d3.select(node).selectAll('#graph-tooltip').remove();
+                //     }
                     
-                }, 400);
+                // }, 400);
             });
 
     }
