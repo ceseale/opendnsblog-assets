@@ -312,7 +312,7 @@ class Graph extends React.Component {
 
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
 
-                let relPosition = d3.mouse(document.getElementById('graph-container'));
+                let relPosition = d3.mouse(document.body);
 
                 ReactDOM.render(
                     <InfoLegend {...d} fixedWidth={true} left={relPosition[0]} top={relPosition[1]} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
@@ -330,13 +330,13 @@ class Graph extends React.Component {
                 });
             })
             .on('mouseleave', () => {
-                // setTimeout(() => {
+                setTimeout(() => {
 
-                //     if (!inTip) {
-                //         d3.select(node).selectAll('#graph-tooltip').remove();
-                //     }
+                    if (!inTip) {
+                        d3.select(node).selectAll('#graph-tooltip').remove();
+                    }
                     
-                // }, 400);
+                }, 400);
             });
 
     }
