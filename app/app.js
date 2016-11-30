@@ -17,25 +17,25 @@ let App = {
     run() {
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication
-        ReactDOM.render(
-            <JSONTree getItemString={getItemString} hideRoot={true} data={data} />,
-            document.getElementById('tree-container')
-        );
+        // ReactDOM.render(
+        //     <JSONTree getItemString={getItemString} hideRoot={true} data={data} />,
+        //     document.getElementById('tree-container')
+        // );
 
         ReactDOM.render(
             <Graph width={800} height={340} codeRunCount={0} data={data} />,
             document.getElementById('graph-container')
         );
 
-        ReactDOM.render(
-            <ForceGraph width={800} height={340} codeRunCount={0} data={data} />,
-            document.getElementById('fgraph-container')
-        );
+        // ReactDOM.render(
+        //     <ForceGraph width={800} height={340} codeRunCount={0} data={data} />,
+        //     document.getElementById('fgraph-container')
+        // );
 
-        ReactDOM.render(
-            <GlobePatterns width={800} height={800} codeRunCount={0} data={data} />,
-            document.getElementById('globe-container')
-        );
+        // ReactDOM.render(
+        //     <GlobePatterns width={800} height={800} codeRunCount={0} data={data} />,
+        //     document.getElementById('globe-container')
+        // );
     }
 };
 

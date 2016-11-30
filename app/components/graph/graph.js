@@ -95,13 +95,11 @@ class Graph extends React.Component {
         };
 
         let node = ReactDOM.findDOMNode(this);
-        let firstMove = false;
-
+// "translate(413.96857357031234,178.45779808585965)scale(0.057831526752365754)"
         function zoom() {
-            if (firstMove) {
-                d3.select(node).select('#childg').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-            }
-            firstMove = true;
+
+            d3.select(node).select('#childg').attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+
         }
 
         d3.select(node).select('#topg').call(d3.behavior.zoom().scaleExtent([0, 8]).on("zoom", zoom))
@@ -314,8 +312,10 @@ class Graph extends React.Component {
 
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
 
+                let relPosition = d3.mouse(document.getElementById('graph-container'));
+
                 ReactDOM.render(
-                    <InfoLegend {...d} fixedWidth={true} left={that.getMousePosition()[0]} top={that.getMousePosition()[1]} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
+                    <InfoLegend {...d} fixedWidth={true} left={relPosition[0]} top={relPosition[1]} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
                         <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
                     </InfoLegend>, document.getElementById('graph-tooltip')
                 );
@@ -415,9 +415,9 @@ class Graph extends React.Component {
             <div className={'graphContainer'}>
 
                     <svg width={this.props.width} height={this.props.height} className={'graphSvg'}>
-                        <g id='topg'>
-                            <rect className="overlay" width={this.props.width} height={this.props.height}></rect>
-                            <g id='childg' transform={"translate(413.96857357031234,178.45779808585965)scale(0.057831526752365754)"}>
+                        <g id='topg' transform={"translate(413.96857357031234,178.45779808585965)scale(0.057831526752365754)"}>
+                            <rect className="overlay" width={this.props.width} height={this.props.height} transform="translate(-10000,-7178.45779808585965)scale(40)"></rect>
+                            <g id='childg'>
                                 <path id='depth0' stroke='transparent' fill='none' d={d3.svg.line().tension(.4).interpolate('cardinal')(depth0)}></path>
                                 <g>
                                     <path id='depth1' className='depth' stroke='#58585b' fill='none' strokeWidth={1} opacity='0' d={test}></path>
