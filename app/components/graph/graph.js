@@ -312,7 +312,7 @@ class Graph extends React.Component {
 
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
 
-                let relPosition = d3.mouse(document.body);
+                let relPosition = d3.mouse(d3.select('entry-content').node());
 
                 ReactDOM.render(
                     <InfoLegend {...d} fixedWidth={true} left={relPosition[0]} top={relPosition[1]} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
