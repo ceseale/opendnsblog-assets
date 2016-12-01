@@ -13,7 +13,7 @@ var config = {
 
     output: {
         path: __dirname,
-        filename: './bundle.js'
+        filename: './bundle.mini.js'
     },
 
     module: {
@@ -41,7 +41,7 @@ var config = {
         new webpack.DefinePlugin({
             'process.env': { NODE_ENV: JSON.stringify('development') }
         }),
-        new ExtractTextPlugin('bundle.css'),
+        new ExtractTextPlugin('bundle.mini.css'),
         new webpack.optimize.OccurrenceOrderPlugin()
         ,
         new webpack.optimize.UglifyJsPlugin({
