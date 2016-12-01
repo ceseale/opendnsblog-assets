@@ -236,7 +236,7 @@ class Graph extends React.Component {
             .attr('d', (d) => {
                 return d3.svg.line()(d.lineCorrdinates);
             })
-            .attr('opacity', .5);
+            .attr('opacity', .7);
 
         d3.select(node)
             .selectAll('.depth')

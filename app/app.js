@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Graph from './components/graph/graph';
 import ForceGraph from './components/forceGraph/ForceDirectedGraph';
 import GlobePatterns from './components/GlobePatterns/GlobePatterns';
-import data from './data2.json';
+import data from './data.json';
 import globalStyle from './global.scss';
 import JSONTree from 'react-json-tree';
 
