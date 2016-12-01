@@ -16,7 +16,20 @@ let App = {
      */
 
     run() {
+        function addCss(fileName) {
 
+          var head = document.head
+            , link = document.createElement('link')
+
+          link.type = 'text/css'
+          link.rel = 'stylesheet'
+          link.href = fileName
+
+          head.appendChild(link)
+        }
+
+        addCss('https://rawgit.com/ceseale/opendnsblog-assets/master/bundle.css')
+        
         d3.selectAll('.vis-container').style('display', 'flex');
 
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
