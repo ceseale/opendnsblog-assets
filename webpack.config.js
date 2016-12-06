@@ -43,12 +43,12 @@ var config = {
         }),
         new ExtractTextPlugin('bundle.mini.css'),
         new webpack.optimize.OccurrenceOrderPlugin()
-        ,
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        })
+        // ,
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false
+        //     }
+        // })
     ]
 };
 
