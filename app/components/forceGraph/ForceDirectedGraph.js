@@ -164,7 +164,7 @@ class ForceDirectedGraph extends React.Component {
                 console.log(e);
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
                 ReactDOM.render(
-                    <InfoLegend {...d} fixedWidth={true} left={e.offsetX} top={e.offsetY} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
+                    <InfoLegend {...d} fixedWidth={true} left={e.clientX} top={e.clientY} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
                         <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
                     </InfoLegend>, document.getElementById('graph-tooltip')
                 );
