@@ -161,10 +161,10 @@ class ForceDirectedGraph extends React.Component {
                 } else {
                     href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
                 }
-
+                console.log(e);
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
                 ReactDOM.render(
-                    <InfoLegend {...d} fixedWidth={true} left={e.pageX} top={e.pageY} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
+                    <InfoLegend {...d} fixedWidth={true} left={e.clientX} top={e.clientY} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
                         <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
                     </InfoLegend>, document.getElementById('graph-tooltip')
                 );
