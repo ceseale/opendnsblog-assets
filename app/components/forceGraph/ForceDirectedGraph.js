@@ -137,9 +137,10 @@ class ForceDirectedGraph extends React.Component {
             return `rgb(${r}, ${g}, ${b})`;
         }
 
-        d3.select(node).select('#mainCanvas').node().addEventListener('mousemove', function(e) {
-            let mouseX = e.layerX;
-            let mouseY = e.layerY;
+        d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
+            let mouseData = d3.mouse(this);
+            let mouseX = mouseData[0];
+            let mouseY = mouseData[1];
             let col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
             let d = Object.assign({}, colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]);
 
@@ -161,10 +162,12 @@ class ForceDirectedGraph extends React.Component {
                 } else {
                     href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
                 }
-                console.log(e);
+                
+                let relPosition = d3.mouse(node);
+
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
                 ReactDOM.render(
-                    <InfoLegend {...d} fixedWidth={true} left={e.clientX} top={e.clientY} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
+                    <InfoLegend {...d} fixedWidth={true} left={relPosition[0] + node.offsetLeft} top={relPosition[1] + node.offsetTop} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
                         <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
                     </InfoLegend>, document.getElementById('graph-tooltip')
                 );
