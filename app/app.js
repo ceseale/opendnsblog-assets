@@ -28,9 +28,9 @@ let App = {
           head.appendChild(link)
         }
 
-        addCss('https://rawgit.com/ceseale/opendnsblog-assets/master/bundle.css')
+        addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
         
-        d3.selectAll('.vis-container').style('display', 'flex');
+        // d3.selectAll('.vis-container').style('display', 'flex');
 
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication
