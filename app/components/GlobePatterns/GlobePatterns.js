@@ -51,6 +51,7 @@ class GlobePatterns extends React.Component {
     const coordinatePairs = [];
 
     const pairColors = [];
+    const pairMap = {}; // to avoid dups
 
     for (let i = 0; i < electronChartData.graph.edges.length; i++) {
       const edge = electronChartData.graph.edges[i];
@@ -72,6 +73,7 @@ class GlobePatterns extends React.Component {
       }
     }
 
+    console.log(coordinatePairs.length);
     this.data = coordinatePairs;
     this.colorData = pairColors;
     // console.log(electronChartData, coordinatePairs, pairColors);
