@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ForceWorker from './dispatch';
 import ReactDOM from 'react-dom';
 import InfoLegend from '../graph/InfoLegend';
-
+import globalStyle from '../../global.scss';
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
@@ -39,11 +39,7 @@ class ForceDirectedGraph extends React.Component {
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
-
-        console.log(d3.select(node).selectAll('.graphHidden'));
-
         const colorMap = {};
-
         const zoom = () => {
             context.save();
             context.clearRect(0, 0, this.props.width, this.props.height);
@@ -66,7 +62,6 @@ class ForceDirectedGraph extends React.Component {
         d3.select(node).select('canvas').call(d3.behavior.zoom().scaleExtent([0, 8]).on('zoom', zoom))
 
         function ended(data, hidden) {
-
             if (!hidden) {
                 var nodes = data.nodes,
                     edges = data.edges;
@@ -75,9 +70,17 @@ class ForceDirectedGraph extends React.Component {
                 context.save();
                 context.translate(this.props.width / 2, this.props.height / 2);
 
-                edges.forEach(drawEdge);
+                for (let i = 0; i < edges.length; i++) {
+                    let edge = edges[i];
 
-                nodes.forEach(drawNode);
+                    drawEdge(edge);
+                }
+
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    
+                    drawNode(node);
+                }
 
                 context.restore();
             } else {
@@ -88,7 +91,11 @@ class ForceDirectedGraph extends React.Component {
                 hiddenContext.save();
                 hiddenContext.translate(this.props.width / 2, this.props.height / 2);
 
-                nodes.forEach(drawNodeHidden);
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    
+                    drawNodeHidden(node);
+                }
 
                 hiddenContext.restore();
             }
@@ -99,7 +106,7 @@ class ForceDirectedGraph extends React.Component {
             context.beginPath();
             context.moveTo(d.source.x, d.source.y);
             context.lineTo(d.target.x, d.target.y);
-            context.strokeStyle = d.style ? d.style.color : 'white';
+            context.strokeStyle = d.style ? d.style.color : 'rgba(255,255,255,.6)';
             context.stroke();
         }
 
@@ -162,7 +169,7 @@ class ForceDirectedGraph extends React.Component {
                 } else {
                     href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
                 }
-                
+
                 let relPosition = d3.mouse(node);
 
                 d3.select(node).append('div').attr('id', 'graph-tooltip');
@@ -177,6 +184,50 @@ class ForceDirectedGraph extends React.Component {
             }
 
         });
+
+        const changeNodeColors = (node, color) => {
+            node.style = { color: color };
+        }
+
+        this.changeFocus = (type, color) => {
+            let nodes = data.nodes;
+            const resetColors = () => {
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    changeNodeColors(node, '#80A6D8')
+                }
+
+                ended.bind(this)(data);
+                return;
+            }
+
+            if (this.lastFocus === type || !type) {
+                return resetColors();
+            } 
+
+            if (type !== 'Blocked Domains') {
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    if (node.type === type) {
+                        changeNodeColors(node, color)
+                    } else {
+                        changeNodeColors(node, '#80A6D8')
+                    }
+                }
+            } else if (type === 'Blocked Domains') {
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    if (node.status === -1) {
+                        changeNodeColors(node, color)
+                    } else {
+                        changeNodeColors(node, '#80A6D8')
+                    }
+                }
+            }
+
+            ended.bind(this)(data);
+            
+        }
 
     }
 
@@ -195,7 +246,6 @@ class ForceDirectedGraph extends React.Component {
 
         if (this.props.data.nodes.length) {      
             let forceWorker = ForceWorker(this.finishedWork.bind(this), this.progress.bind(this));
-            console.log(this.data);
             forceWorker.postMessage(this.data);
         }
 
@@ -203,6 +253,11 @@ class ForceDirectedGraph extends React.Component {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
               <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
+              <a className={'button'} onClick={() => ( this.changeFocus('hash', 'blue') )}>Hashes</a>
+              <a className={'button'} onClick={() => ( this.changeFocus('domain', 'green') )}>Domains</a>
+              <a className={'button'} onClick={() => ( this.changeFocus('Blocked Domains', 'red') )}>Blocked Domains</a>
+              <a className={'button'} onClick={() => ( this.changeFocus('ip', 'yellow') )}>IPs</a>
+              <a className={'button'} onClick={() => ( this.changeFocus('email', 'orange') )}>Emails</a>
             </div>
         );
     }

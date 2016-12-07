@@ -16,6 +16,26 @@
   }
 }
 
+.button {
+  background-color: ForestGreen;
+  border-radius: 10px;
+  color: white;
+  padding: .5em;
+  margin: 5px;
+  text-decoration: none;
+  opacity: .8;
+  cursor: pointer;
+}
+
+.button:focus,
+.button:hover {
+  opacity: 1;
+}
+
+.button.active {
+  opacity: 1;
+}
+
 #gui {
   position: relative;
   top: -760px;
@@ -68,3 +88,6 @@
   50% { margin-left: 25%; margin-right: 0%; }
   100% { margin-left: 100%; margin-right: 0; }
 }
+
+
+

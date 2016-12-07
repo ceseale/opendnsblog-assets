@@ -28,14 +28,14 @@ let App = {
           head.appendChild(link)
         }
 
-        addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
+        // addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
+        addCss('./bundle.mini.css')
         
         // d3.selectAll('.vis-container').style('display', 'flex');
 
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication
-        for (let depth = 0; depth <= 5; depth++) {   
-          console.log(depth);     
+        for (let depth = 0; depth < 5; depth++) {   
           ReactDOM.render(
               <ForceGraph width={760} height={340} depth={depth} data={data} />,
               document.getElementById(`fgraph-container${depth}`)
