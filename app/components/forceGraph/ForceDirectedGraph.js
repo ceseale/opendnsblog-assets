@@ -8,6 +8,7 @@ import globalStyle from '../../global.scss';
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
         super(props);
+        this.state = { lastFocus: null };
         this.data = JSON.parse(JSON.stringify(this.props.data));
 
         if (this.props.depth !== undefined) {
@@ -39,21 +40,30 @@ class ForceDirectedGraph extends React.Component {
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
+        let lastTranslation = null;
+        let lastScale = null;
         const colorMap = {};
         const zoom = () => {
-            context.save();
-            context.clearRect(0, 0, this.props.width, this.props.height);
-            context.translate(d3.event.translate[0], d3.event.translate[1]);
-            context.scale(d3.event.scale, d3.event.scale);
-            ended.bind(this)(data);
-            context.restore();
+            lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
+            lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
 
-            hiddenContext.save();
-            hiddenContext.clearRect(0, 0, this.props.width, this.props.height);
-            hiddenContext.translate(d3.event.translate[0], d3.event.translate[1]);
-            hiddenContext.scale(d3.event.scale, d3.event.scale);
-            ended.bind(this)(data, true);
-            hiddenContext.restore();
+            if (lastScale && lastTranslation) {            
+                context.save();
+                context.clearRect(0, 0, this.props.width, this.props.height);
+                context.translate(lastTranslation[0], lastTranslation[1]);
+                context.scale(lastScale, lastScale);
+                ended.bind(this)(data);
+                context.restore();
+
+                hiddenContext.save();
+                hiddenContext.clearRect(0, 0, this.props.width, this.props.height);
+                hiddenContext.translate(lastTranslation[0], lastTranslation[1]);
+                hiddenContext.scale(lastScale, lastScale);
+                ended.bind(this)(data, true);
+                hiddenContext.restore();
+            } else {
+                ended.bind(this)(data);
+            }
         }
         
         ended.bind(this)(data);
@@ -106,7 +116,7 @@ class ForceDirectedGraph extends React.Component {
             context.beginPath();
             context.moveTo(d.source.x, d.source.y);
             context.lineTo(d.target.x, d.target.y);
-            context.strokeStyle = d.style ? d.style.color : 'rgba(255,255,255,.6)';
+            context.strokeStyle = d.style ? d.style.color || 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)';
             context.stroke();
         }
 
@@ -115,7 +125,8 @@ class ForceDirectedGraph extends React.Component {
             context.moveTo(d.x + 3, d.y);
             context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
             context.fill();
-            context.strokeStyle = d.style ? d.style.color : '#80A6D8';
+            // context.filter = 'blur(2px)';
+            context.strokeStyle = d.style ? d.style.color || '#80A6D8' : '#80A6D8';
             context.stroke();
         }
 
@@ -144,6 +155,46 @@ class ForceDirectedGraph extends React.Component {
             return `rgb(${r}, ${g}, ${b})`;
         }
 
+        const focusNeighborhood = (id) => {
+
+            // this.
+            var nodes = data.nodes,
+                edges = data.edges;
+
+            if (id === null) {
+                for (let i = 0; i < edges.length; i++) {
+                    let edge = edges[i];
+                    edge.style = { color: 'rgba(255,255,255,.6)' };
+                }
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+                    
+                    drawNodeHidden(node);
+                }
+                zoom();
+                return;
+            }
+
+            for (let i = 0; i < edges.length; i++) {
+                let edge = edges[i];
+
+                if (edge.src === id || edge.dst === id) {
+                    if (edge.style) {
+                        edge.style.color = 'rgba(255,255,255,.9)'
+                    } else {
+                        edge.style = { color: 'rgba(255,255,255,.9)' };
+                    }
+                } else {
+                    if (edge.style) {
+                        edge.style.color = 'rgba(255,255,255,.2)'
+                    } else {
+                        edge.style = { color: 'rgba(255,255,255,.2)' };
+                    }
+                }
+            }
+            zoom();
+        }
+
         d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
             let mouseData = d3.mouse(this);
             let mouseX = mouseData[0];
@@ -153,12 +204,13 @@ class ForceDirectedGraph extends React.Component {
 
             if(colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]) {
 
+                focusNeighborhood(d.id)
                 if (d.type === 'hash') {
                     d.id = d.id.split('').slice(0, 15).join('') + '...';
                 }
 
-                delete d.x;
-                delete d.y;
+                // delete d.x;
+                // delete d.y;
 
                 let href;
 
@@ -178,9 +230,11 @@ class ForceDirectedGraph extends React.Component {
                         <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
                     </InfoLegend>, document.getElementById('graph-tooltip')
                 );
+                
 
             } else {
                 d3.select(node).selectAll('#graph-tooltip').remove();
+                focusNeighborhood(null);
             }
 
         });
@@ -197,11 +251,12 @@ class ForceDirectedGraph extends React.Component {
                     changeNodeColors(node, '#80A6D8')
                 }
 
-                ended.bind(this)(data);
+                zoom();
                 return;
             }
 
-            if (this.lastFocus === type || !type) {
+            if (this.state.lastFocus === type || !type) {
+                this.setState({ lastFocus: null });
                 return resetColors();
             } 
 
@@ -225,7 +280,8 @@ class ForceDirectedGraph extends React.Component {
                 }
             }
 
-            ended.bind(this)(data);
+            this.setState({ lastFocus: type });
+            zoom();
             
         }
 
@@ -242,22 +298,39 @@ class ForceDirectedGraph extends React.Component {
 
     }
 
-    render() {
-
+    componentDidMount() {
         if (this.props.data.nodes.length) {      
             let forceWorker = ForceWorker(this.finishedWork.bind(this), this.progress.bind(this));
             forceWorker.postMessage(this.data);
         }
+    }
+
+    render() {
+
+        const filters = [
+            { type: 'hash', title: 'Hashes', color: 'blue' },
+            { type: 'domain', title: 'Domains', color: 'green'},
+            { type: 'Blocked Domains', title: 'Blocked Domains', color: 'red'},
+            { type: 'ip', title: 'IPs', color: 'yellow'},
+            { type: 'email', title: 'Emails', color: 'orange'},
+        ];
+
+        for (let i = 0; i < filters.length; i++) {
+            let filter = filters[i];
+            if (filter.type === this.state.lastFocus) {
+                filter.class = 'active';
+            } else {
+                filter.class = '';
+            }
+        }
+
+        let filerButtons = filters.map((d, i) => <a key={i} className={`button ${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</a>);
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
               <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
-              <a className={'button'} onClick={() => ( this.changeFocus('hash', 'blue') )}>Hashes</a>
-              <a className={'button'} onClick={() => ( this.changeFocus('domain', 'green') )}>Domains</a>
-              <a className={'button'} onClick={() => ( this.changeFocus('Blocked Domains', 'red') )}>Blocked Domains</a>
-              <a className={'button'} onClick={() => ( this.changeFocus('ip', 'yellow') )}>IPs</a>
-              <a className={'button'} onClick={() => ( this.changeFocus('email', 'orange') )}>Emails</a>
+              {filerButtons}
             </div>
         );
     }
