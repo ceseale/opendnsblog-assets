@@ -124,10 +124,8 @@ class ForceDirectedGraph extends React.Component {
             context.beginPath();
             context.moveTo(d.x + 3, d.y);
             context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+            context.fillStyle = d.style ? d.style.color || '#059fd9' : '#059fd9';
             context.fill();
-            // context.filter = 'blur(2px)';
-            context.strokeStyle = d.style ? d.style.color || '#80A6D8' : '#80A6D8';
-            context.stroke();
         }
 
         function drawNodeHidden(d) {
@@ -156,9 +154,8 @@ class ForceDirectedGraph extends React.Component {
         }
 
         const focusNeighborhood = (id) => {
-
-            // this.
-            var nodes = data.nodes,
+            let idSet = new Set();
+            let nodes = data.nodes,
                 edges = data.edges;
 
             if (id === null) {
@@ -166,11 +163,13 @@ class ForceDirectedGraph extends React.Component {
                     let edge = edges[i];
                     edge.style = { color: 'rgba(255,255,255,.6)' };
                 }
+
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
                     
-                    drawNodeHidden(node);
+                    drawNode(node);
                 }
+
                 zoom();
                 return;
             }
@@ -179,17 +178,33 @@ class ForceDirectedGraph extends React.Component {
                 let edge = edges[i];
 
                 if (edge.src === id || edge.dst === id) {
+
+                    idSet.add(edge.src);
+                    idSet.add(edge.dst);
+
                     if (edge.style) {
-                        edge.style.color = 'rgba(255,255,255,.9)'
+                        edge.style.color = 'rgba(255,255,255,.9)';
                     } else {
                         edge.style = { color: 'rgba(255,255,255,.9)' };
                     }
                 } else {
                     if (edge.style) {
-                        edge.style.color = 'rgba(255,255,255,.2)'
+                        edge.style.color = 'rgba(255,255,255,.2)';
                     } else {
                         edge.style = { color: 'rgba(255,255,255,.2)' };
                     }
+                }
+            }
+            
+
+            idSet;
+            for (let i = 0; i < nodes.length; i++) {
+                let node = nodes[i];
+                if (idSet.has(node.id)) {
+
+                    drawNode(node);
+                } else {
+
                 }
             }
             zoom();
@@ -248,7 +263,7 @@ class ForceDirectedGraph extends React.Component {
             const resetColors = () => {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
-                    changeNodeColors(node, '#80A6D8')
+                    changeNodeColors(node, 'rgba(5, 159, 217, 1)')
                 }
 
                 zoom();
@@ -266,7 +281,7 @@ class ForceDirectedGraph extends React.Component {
                     if (node.type === type) {
                         changeNodeColors(node, color)
                     } else {
-                        changeNodeColors(node, '#80A6D8')
+                        changeNodeColors(node, 'rgba(5, 159, 217, .5)')
                     }
                 }
             } else if (type === 'Blocked Domains') {
@@ -275,7 +290,7 @@ class ForceDirectedGraph extends React.Component {
                     if (node.status === -1) {
                         changeNodeColors(node, color)
                     } else {
-                        changeNodeColors(node, '#80A6D8')
+                        changeNodeColors(node, 'rgba(5, 159, 217, .5)')
                     }
                 }
             }
@@ -308,15 +323,16 @@ class ForceDirectedGraph extends React.Component {
     render() {
 
         const filters = [
-            { type: 'hash', title: 'Hashes', color: 'blue' },
-            { type: 'domain', title: 'Domains', color: 'green'},
-            { type: 'Blocked Domains', title: 'Blocked Domains', color: 'red'},
-            { type: 'ip', title: 'IPs', color: 'yellow'},
-            { type: 'email', title: 'Emails', color: 'orange'},
+            { type: 'hash', title: 'Hashes', color: '#f37821' },
+            { type: 'domain', title: 'Domains', color: '#f37821'},
+            { type: 'Blocked Domains', title: 'Blocked Domains', color: '#f37821'},
+            { type: 'ip', title: 'IPs', color: '#f37821'},
+            { type: 'email', title: 'Emails', color: '#f37821'},
         ];
 
         for (let i = 0; i < filters.length; i++) {
             let filter = filters[i];
+
             if (filter.type === this.state.lastFocus) {
                 filter.class = 'active';
             } else {
@@ -324,13 +340,15 @@ class ForceDirectedGraph extends React.Component {
             }
         }
 
-        let filerButtons = filters.map((d, i) => <a key={i} className={`button ${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</a>);
+
+
+        let filerButtons = filters.map((d, i) => <a key={i} style={{ backgroundColor: d.color }} className={`fgraph-button ${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</a>);
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
               <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
-              {filerButtons}
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>{filerButtons}</div>
             </div>
         );
     }
