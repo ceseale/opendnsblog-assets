@@ -28,8 +28,8 @@ let App = {
           head.appendChild(link)
         }
 
-        // addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
-        addCss('./bundle.mini.css')
+        addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
+        // addCss('./bundle.mini.css')
         
         // d3.selectAll('.vis-container').style('display', 'flex');
 
