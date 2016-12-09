@@ -206,11 +206,11 @@ class ForceDirectedGraph extends React.Component {
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes[i];
 
-                if (idSet.has(node.id)) {
+                if (ids.indexOf(node.id)) {
                     // if (node.style) {
-                    //     node.style.color = 'rgba(5, 159, 217, .25)';
+                    //     node.style.color = '#f37821';
                     // } else {
-                    //     node.style = { color: 'rgba(5, 159, 217, .25)' };
+                    //     node.style = { color: '#f37821' };
                     // }
                 } else {
                     if (node.style) {
@@ -223,7 +223,7 @@ class ForceDirectedGraph extends React.Component {
             }
             zoom();
         }
-        
+
         let that = this;
         d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
             let mouseData = d3.mouse(this);
@@ -288,7 +288,7 @@ class ForceDirectedGraph extends React.Component {
 
             if (this.state.lastFocus === type || !type) {
                 this.setState({ lastFocus: null });
-                return resetColors();
+                return focusNeighborhood(this.focusOn);
             } 
 
             if (type !== 'Blocked Domains') {
