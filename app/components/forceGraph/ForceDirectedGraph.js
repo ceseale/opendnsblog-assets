@@ -10,6 +10,7 @@ class ForceDirectedGraph extends React.Component {
         super(props);
         this.state = { lastFocus: null };
         this.data = JSON.parse(JSON.stringify(this.props.data));
+        this.focusOn = [];
 
         if (this.props.depth !== undefined) {
             for (let i = 0; i < this.data.edges.length; i++) {
@@ -37,16 +38,18 @@ class ForceDirectedGraph extends React.Component {
     finishedWork(data) {
 
         d3.select(this.span).remove();
+
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
         let lastTranslation = null;
         let lastScale = null;
+        let width = this.props.width;
+        let height = this.props.height;
         const colorMap = {};
         const zoom = () => {
             lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
             lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
-
             if (lastScale && lastTranslation) {            
                 context.save();
                 context.clearRect(0, 0, this.props.width, this.props.height);
@@ -117,6 +120,7 @@ class ForceDirectedGraph extends React.Component {
             context.moveTo(d.source.x, d.source.y);
             context.lineTo(d.target.x, d.target.y);
             context.strokeStyle = d.style ? d.style.color || 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)';
+            context.filter = '';
             context.stroke();
         }
 
@@ -128,6 +132,7 @@ class ForceDirectedGraph extends React.Component {
             context.fill();
         }
 
+        
         function drawNodeHidden(d) {
             let nodeColor = getRandomColor();
 
@@ -158,7 +163,9 @@ class ForceDirectedGraph extends React.Component {
             let nodes = data.nodes,
                 edges = data.edges;
 
-            if (id === null) {
+            let ids = Array.isArray(id) ? id : [id];
+
+            if (id === null || ids.length === 0) {
                 for (let i = 0; i < edges.length; i++) {
                     let edge = edges[i];
                     edge.style = { color: 'rgba(255,255,255,.6)' };
@@ -166,7 +173,7 @@ class ForceDirectedGraph extends React.Component {
 
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
-                    
+                    node.style = { color: 'rgba(5, 159, 217, .9)' };
                     drawNode(node);
                 }
 
@@ -177,7 +184,7 @@ class ForceDirectedGraph extends React.Component {
             for (let i = 0; i < edges.length; i++) {
                 let edge = edges[i];
 
-                if (edge.src === id || edge.dst === id) {
+                if (ids.indexOf(edge.src) > -1 || ids.indexOf(edge.dst) > -1) {
 
                     idSet.add(edge.src);
                     idSet.add(edge.dst);
@@ -189,27 +196,35 @@ class ForceDirectedGraph extends React.Component {
                     }
                 } else {
                     if (edge.style) {
-                        edge.style.color = 'rgba(255,255,255,.2)';
+                        edge.style.color = 'rgba(255,255,255,.25)';
                     } else {
-                        edge.style = { color: 'rgba(255,255,255,.2)' };
+                        edge.style = { color: 'rgba(255,255,255,.25)' };
                     }
                 }
             }
-            
 
-            idSet;
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes[i];
+
                 if (idSet.has(node.id)) {
-
-                    drawNode(node);
+                    // if (node.style) {
+                    //     node.style.color = 'rgba(5, 159, 217, .25)';
+                    // } else {
+                    //     node.style = { color: 'rgba(5, 159, 217, .25)' };
+                    // }
                 } else {
-
+                    if (node.style) {
+                        node.style.color = 'rgba(5, 159, 217, .25)';
+                    } else {
+                        node.style = { color: 'rgba(5, 159, 217, .25)' };
+                    }
                 }
+                drawNode(node);
             }
             zoom();
         }
-
+        
+        let that = this;
         d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
             let mouseData = d3.mouse(this);
             let mouseX = mouseData[0];
@@ -249,7 +264,7 @@ class ForceDirectedGraph extends React.Component {
 
             } else {
                 d3.select(node).selectAll('#graph-tooltip').remove();
-                focusNeighborhood(null);
+                focusNeighborhood(that.focusOn);
             }
 
         });
@@ -260,6 +275,7 @@ class ForceDirectedGraph extends React.Component {
 
         this.changeFocus = (type, color) => {
             let nodes = data.nodes;
+            this.focusOn = [];
             const resetColors = () => {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
@@ -279,24 +295,26 @@ class ForceDirectedGraph extends React.Component {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
                     if (node.type === type) {
-                        changeNodeColors(node, color)
+                        this.focusOn.push(node.id);
+                        changeNodeColors(node, color);
                     } else {
-                        changeNodeColors(node, 'rgba(5, 159, 217, .5)')
+                        changeNodeColors(node, 'rgba(5, 159, 217, .5)');
                     }
                 }
             } else if (type === 'Blocked Domains') {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
                     if (node.status === -1) {
-                        changeNodeColors(node, color)
+                        this.focusOn.push(node.id);
+                        changeNodeColors(node, color);
                     } else {
-                        changeNodeColors(node, 'rgba(5, 159, 217, .5)')
+                        changeNodeColors(node, 'rgba(5, 159, 217, .5)');
                     }
                 }
             }
 
             this.setState({ lastFocus: type });
-            zoom();
+            focusNeighborhood(this.focusOn);
             
         }
 
