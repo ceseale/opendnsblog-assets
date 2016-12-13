@@ -31,13 +31,13 @@ let App = {
           head.appendChild(link)
         }
 
-        // addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
-        addCss('./bundle.mini.css')
+        addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
+        // addCss('./bundle.mini.css')
         // d3.selectAll('.vis-container').style('display', 'flex');
 
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication
-        for (let depth = 1; depth < 4; depth++) {
+        for (let depth = 1; depth < 5; depth++) {
           if (depth === 4) {
             ReactDOM.render(
                 <ForceGraph width={760 - 166} height={340} depth={depth} initScale={0.14906360904132906} data={data} />,

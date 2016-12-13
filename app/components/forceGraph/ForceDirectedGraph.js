@@ -42,8 +42,6 @@ class ForceDirectedGraph extends React.Component {
 
     finishedWork(data) {
 
-        d3.select(this.span).remove();
-
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
@@ -53,6 +51,7 @@ class ForceDirectedGraph extends React.Component {
         let height = this.props.height;
         let first = true;
         let radius = 3;
+        let zooming = false;
 
         const colorMap = {};
         const zoom = () => {
@@ -71,6 +70,7 @@ class ForceDirectedGraph extends React.Component {
         }
         
         const zoomEnd = () => {
+            zooming = false;
             lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
             lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
             if (lastScale && lastTranslation) {            
@@ -85,11 +85,14 @@ class ForceDirectedGraph extends React.Component {
             }
         }
         
+        const zoomStart = () => {
+            zooming = true;
+        }
 
         ended.bind(this)(data);
         ended.bind(this)(data, true);
 
-        let zoomWorker = d3.behavior.zoom().scaleExtent([1, 8]).on('zoom', zoom).on('zoomend', zoomEnd);
+        let zoomWorker = d3.behavior.zoom().scaleExtent([1, 8]).on('zoom', zoom).on('zoomend', zoomEnd).on('zoomstart', zoomStart);
         d3.select(node).select('canvas').call(zoomWorker);
 
         const zoomIn = () => {
@@ -287,45 +290,48 @@ class ForceDirectedGraph extends React.Component {
 
         let that = this;
         d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
-            let mouseData = d3.mouse(this);
-            let mouseX = mouseData[0];
-            let mouseY = mouseData[1];
-            let col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
-            let d = Object.assign({}, colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]);
+            
+            if (!zooming) {
+                let mouseData = d3.mouse(this);
+                let mouseX = mouseData[0];
+                let mouseY = mouseData[1];
+                let col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
+                let d = Object.assign({}, colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]);
 
-            if(colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]) {
+                if(colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]) {
 
-                focusNeighborhood(d.id)
-                if (d.type === 'hash') {
-                    d.id = d.id.split('').slice(0, 15).join('') + '...';
-                }
+                    focusNeighborhood(d.id)
+                    if (d.type === 'hash') {
+                        d.id = d.id.split('').slice(0, 15).join('') + '...';
+                    }
 
-                // delete d.x;
-                // delete d.y;
+                    // delete d.x;
+                    // delete d.y;
 
-                let href;
+                    let href;
 
-                if (d.type === 'hash') {
-                    href = 'https://investigate.opendns.com/sample-view/' + d.id;
-                } else if (d.type === 'ip') {
-                    href = ('https://investigate.opendns.com/ip-view/' + d.id);
+                    if (d.type === 'hash') {
+                        href = 'https://investigate.opendns.com/sample-view/' + d.id;
+                    } else if (d.type === 'ip') {
+                        href = ('https://investigate.opendns.com/ip-view/' + d.id);
+                    } else {
+                        href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
+                    }
+
+                    let relPosition = d3.mouse(node);
+
+                    d3.select(node).append('div').attr('id', 'graph-tooltip');
+                    ReactDOM.render(
+                        <InfoLegend {...d} fixedWidth={true} left={relPosition[0] + node.offsetLeft} top={relPosition[1] + node.offsetTop} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
+                            <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
+                        </InfoLegend>, document.getElementById('graph-tooltip')
+                    );
+                    
+
                 } else {
-                    href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
+                    d3.select(node).selectAll('#graph-tooltip').remove();
+                    focusNeighborhood(that.focusOn);
                 }
-
-                let relPosition = d3.mouse(node);
-
-                d3.select(node).append('div').attr('id', 'graph-tooltip');
-                ReactDOM.render(
-                    <InfoLegend {...d} fixedWidth={true} left={relPosition[0] + node.offsetLeft} top={relPosition[1] + node.offsetTop} position={'absolute'} leftBorder={true} text={JSON.stringify(d).replace(/,/g, '\n')}>
-                        <a style={{ color: 'rgb(243, 120, 33)', margin: 5 }} href={href} target="_blank">{('Investigate').toUpperCase()}</a>
-                    </InfoLegend>, document.getElementById('graph-tooltip')
-                );
-                
-
-            } else {
-                d3.select(node).selectAll('#graph-tooltip').remove();
-                focusNeighborhood(that.focusOn);
             }
 
         });
@@ -382,14 +388,11 @@ class ForceDirectedGraph extends React.Component {
     }
 
     progress(data) {
-        if (!this.span) {
-            let node = ReactDOM.findDOMNode(this);
-
-            this.span = d3.select(node).select('.progress').node();
-        } else {
-            this.span.innerHTML = (data.progress * 100).toFixed(0) + '%';
-        }
-
+        let node = ReactDOM.findDOMNode(this);
+        let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
+        context.clearRect(0, 0, this.props.width, this.props.height);
+        context.fillStyle = 'rgba(5, 159, 217, .9)';
+        context.fillText((data.progress * 100).toFixed(0) + '%', this.props.width / 2, this.props.height / 2);
     }
 
     componentDidMount() {
@@ -434,8 +437,10 @@ class ForceDirectedGraph extends React.Component {
                     {filerButtons}
                 </div>
               </div>
+
+
               <div>
-                <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
+                <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
 
