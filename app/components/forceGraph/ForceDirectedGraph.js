@@ -4,6 +4,7 @@ import ForceWorker from './dispatch';
 import ReactDOM from 'react-dom';
 import InfoLegend from '../graph/InfoLegend';
 import globalStyle from '../../global.scss';
+import AnimatedNumber from 'react-animated-number';
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
@@ -11,12 +12,16 @@ class ForceDirectedGraph extends React.Component {
         this.state = { lastFocus: null };
         this.data = JSON.parse(JSON.stringify(this.props.data));
         this.focusOn = [];
+        let edgeSet = new Set();
 
         if (this.props.depth !== undefined) {
             for (let i = 0; i < this.data.edges.length; i++) {
                 let edge = this.data.edges[i];
                 if ((edge.depth) > this.props.depth - 0.5) {
                     delete this.data.edges[i];
+                } else {
+                    edgeSet.add(edge.src);
+                    edgeSet.add(edge.dst);
                 }
             }
 
@@ -25,7 +30,7 @@ class ForceDirectedGraph extends React.Component {
             for (let i = 0; i < this.data.nodes.length; i++) {
                 let node = this.data.nodes[i];
 
-                if (node.depth > this.props.depth) {
+                if (!edgeSet.has(node.id)) {
                     delete this.data.nodes[i];
                 }
             }
@@ -43,9 +48,12 @@ class ForceDirectedGraph extends React.Component {
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
         let lastTranslation = null;
-        let lastScale = null;
+        let lastScale = this.props.initScale;
         let width = this.props.width;
         let height = this.props.height;
+        let first = true;
+        let radius = 3;
+
         const colorMap = {};
         const zoom = () => {
             lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
@@ -57,7 +65,15 @@ class ForceDirectedGraph extends React.Component {
                 context.scale(lastScale, lastScale);
                 ended.bind(this)(data);
                 context.restore();
-
+            } else {
+                ended.bind(this)(data);
+            }
+        }
+        
+        const zoomEnd = () => {
+            lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
+            lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
+            if (lastScale && lastTranslation) {            
                 hiddenContext.save();
                 hiddenContext.clearRect(0, 0, this.props.width, this.props.height);
                 hiddenContext.translate(lastTranslation[0], lastTranslation[1]);
@@ -69,10 +85,27 @@ class ForceDirectedGraph extends React.Component {
             }
         }
         
+
         ended.bind(this)(data);
         ended.bind(this)(data, true);
 
-        d3.select(node).select('canvas').call(d3.behavior.zoom().scaleExtent([0, 8]).on('zoom', zoom))
+        let zoomWorker = d3.behavior.zoom().scaleExtent([1, 8]).on('zoom', zoom).on('zoomend', zoomEnd);
+        d3.select(node).select('canvas').call(zoomWorker);
+
+        const zoomIn = () => {
+            // let newScale = (lastScale || this.props.initScale) + .3;
+
+            // zoomWorker.scale(newScale);
+
+            // let newTranslate = lastTranslation ? [lastTranslation[0] + (lastTranslation[0] / (newScale - .3) ), lastTranslation[1] + (lastTranslation[1] / newScale - .3)] : [this.props.width / 2, this.props.height / 2];
+            // console.log(lastTranslation);
+            // lastTranslation = [newTranslate[0] - (newTranslate[0] * newScale), newTranslate[1] - (newTranslate[1] * newScale)];
+
+            // zoomWorker.translate(lastTranslation);
+
+            // zoomWorker.event(d3.select(node).select('.graphContainer2'));
+        }
+        window.zoomIn = zoomIn;
 
         function ended(data, hidden) {
             if (!hidden) {
@@ -81,7 +114,17 @@ class ForceDirectedGraph extends React.Component {
 
                 context.clearRect(0, 0, this.props.width, this.props.height);
                 context.save();
-                context.translate(this.props.width / 2, this.props.height / 2);
+
+                if (this.props.initTranslation) {
+                    context.translate(this.props.initTranslation.x, this.props.initTranslation.y);
+                } else {
+                    context.translate(this.props.width / 2, this.props.height / 2);
+                }
+                
+
+                if (this.props.initScale) {
+                    context.scale(this.props.initScale, this.props.initScale);
+                }
 
                 for (let i = 0; i < edges.length; i++) {
                     let edge = edges[i];
@@ -102,7 +145,16 @@ class ForceDirectedGraph extends React.Component {
 
                 hiddenContext.clearRect(0, 0, this.props.width, this.props.height);
                 hiddenContext.save();
-                hiddenContext.translate(this.props.width / 2, this.props.height / 2);
+
+                if (this.props.initTranslation) {
+                    hiddenContext.translate(this.props.initTranslation.x, this.props.initTranslation.y);
+                } else {
+                    hiddenContext.translate(this.props.width / 2, this.props.height / 2);
+                }
+
+                if (this.props.initScale) {
+                    hiddenContext.scale(this.props.initScale, this.props.initScale);
+                }
 
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
@@ -113,6 +165,8 @@ class ForceDirectedGraph extends React.Component {
                 hiddenContext.restore();
             }
 
+            first = false;
+
         }
 
         function drawEdge(d) {
@@ -120,16 +174,19 @@ class ForceDirectedGraph extends React.Component {
             context.moveTo(d.source.x, d.source.y);
             context.lineTo(d.target.x, d.target.y);
             context.strokeStyle = d.style ? d.style.color || 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)';
-            context.filter = '';
             context.stroke();
         }
 
         function drawNode(d) {
             context.beginPath();
-            context.moveTo(d.x + 3, d.y);
-            context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-            context.fillStyle = d.style ? d.style.color || '#059fd9' : '#059fd9';
-            context.fill();
+            context.moveTo(d.x + radius, d.y);
+            context.arc(d.x, d.y, radius, 0, 2 * Math.PI);
+            // context.fillStyle = d.style ? d.style.color || '#059fd9' : '#059fd9';
+            // context.fill();
+
+            context.strokeStyle = d.style ? d.style.color || '#059fd9' : '#059fd9';
+            context.stroke();
+
         }
 
         
@@ -143,8 +200,8 @@ class ForceDirectedGraph extends React.Component {
             colorMap[nodeColor] = d;
 
             hiddenContext.beginPath();
-            hiddenContext.moveTo(d.x + 3, d.y);
-            hiddenContext.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+            hiddenContext.moveTo(d.x + radius, d.y);
+            hiddenContext.arc(d.x, d.y, radius, 0, 2 * Math.PI);
             hiddenContext.fillStyle = nodeColor;
             hiddenContext.fill();
             hiddenContext.strokeStyle = nodeColor;
@@ -162,10 +219,14 @@ class ForceDirectedGraph extends React.Component {
             let idSet = new Set();
             let nodes = data.nodes,
                 edges = data.edges;
+            this.focusedEdgeCount = 0;
 
             let ids = Array.isArray(id) ? id : [id];
+            this.focusedNodeCount = ids.length;
 
             if (id === null || ids.length === 0) {
+                this.focusedNodeCount = data.nodes.length;
+                this.focusedEdgeCount = data.edges.length;
                 for (let i = 0; i < edges.length; i++) {
                     let edge = edges[i];
                     edge.style = { color: 'rgba(255,255,255,.6)' };
@@ -185,7 +246,7 @@ class ForceDirectedGraph extends React.Component {
                 let edge = edges[i];
 
                 if (ids.indexOf(edge.src) > -1 || ids.indexOf(edge.dst) > -1) {
-
+                    this.focusedEdgeCount++;
                     idSet.add(edge.src);
                     idSet.add(edge.dst);
 
@@ -206,12 +267,12 @@ class ForceDirectedGraph extends React.Component {
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes[i];
 
-                if (ids.indexOf(node.id)) {
-                    // if (node.style) {
-                    //     node.style.color = '#f37821';
-                    // } else {
-                    //     node.style = { color: '#f37821' };
-                    // }
+                if (ids.indexOf(node.id) > -1) {
+                    if (node.style) {
+                        node.style.color = '#f37821';
+                    } else {
+                        node.style = { color: '#f37821' };
+                    }
                 } else {
                     if (node.style) {
                         node.style.color = 'rgba(5, 159, 217, .25)';
@@ -361,12 +422,23 @@ class ForceDirectedGraph extends React.Component {
 
 
         let filerButtons = filters.map((d, i) => <a key={i} style={{ backgroundColor: d.color }} className={`fgraph-button ${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</a>);
-
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
-              <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>{filerButtons}</div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+              <div style={{ width: '166px', height: this.props.height, background: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+
+                <div style={{ display: 'flex', width: '75%', paddingBottom: '17px', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', color: 'white' }}>
+                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.focusedNodeCount || this.data.nodes.length} duration={1500}/><span>Nodes</span></span>
+                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.focusedEdgeCount || this.data.edges.length} duration={1500}/><span>Edges</span></span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    {filerButtons}
+                </div>
+              </div>
+              <div>
+                <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ cursor: 'crosshair', backgroundColor: 'black' }} ></canvas>
+                <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
+              </div>
+
             </div>
         );
     }
@@ -378,7 +450,9 @@ ForceDirectedGraph.propTypes = {
     data: PropTypes.object,
     width: PropTypes.number,
     height: PropTypes.number,
-    depth: PropTypes.number
+    depth: PropTypes.number,
+    initScale: PropTypes.number,
+    initTranslation: PropTypes.object
 };
 
 export default ForceDirectedGraph;

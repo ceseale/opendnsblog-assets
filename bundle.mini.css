@@ -12,6 +12,8 @@
   background-color: black; }
 
 .fgraph-button {
+  text-align: center;
+  width: 86%;
   background-color: ForestGreen;
   border-radius: 10px;
   color: white;
