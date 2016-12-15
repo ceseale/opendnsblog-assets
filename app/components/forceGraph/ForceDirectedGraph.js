@@ -4,15 +4,26 @@ import ForceWorker from './dispatch';
 import ReactDOM from 'react-dom';
 import InfoLegend from '../graph/InfoLegend';
 import globalStyle from '../../global.scss';
-import AnimatedNumber from 'react-animated-number';
+import { DPLButton } from '@opendns/dpl-buttons';
+import { TypeaheadSearch } from '@opendns/dpl-search';
+import Menu from './Menu';
+import KmeansMenuItem from '../Clustering/Kmeans';
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = { lastFocus: null };
         this.data = JSON.parse(JSON.stringify(this.props.data));
         this.focusOn = [];
+        this.onSearch = (type, ids) => {
+            this.focusOn = ids;
+            this.focusNeighborhood(this.focusOn);
+            this.setState({ lastFocus: type });
+        }
+        this.clusters = null;
         let edgeSet = new Set();
+
 
         if (this.props.depth !== undefined) {
             for (let i = 0; i < this.data.edges.length; i++) {
@@ -40,8 +51,15 @@ class ForceDirectedGraph extends React.Component {
         }
     }
 
-    finishedWork(data) {
+    clusterCB (clusterData) {
+        // console.log(null)
+        this.clusters = clusterData;
+        this.focusNeighborhood(null);
+    }
 
+
+    finishedWork(data) {
+        this.data = data;
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
@@ -52,6 +70,7 @@ class ForceDirectedGraph extends React.Component {
         let first = true;
         let radius = 3;
         let zooming = false;
+        this.clusters = null;
 
         const colorMap = {};
         const zoom = () => {
@@ -218,6 +237,26 @@ class ForceDirectedGraph extends React.Component {
             return `rgb(${r}, ${g}, ${b})`;
         }
 
+        const getClusterColor = (message) => {
+            let clusters = message.clusters;
+            var colors = ['red', 'green', 'blue', 'orange', 'yellow'];
+            for (let i = 0; i < clusters.length; i++) {
+                let cluster = clusters[i];
+                let color = colors[i];
+                for (let j = 0; j < cluster.length; j++) {
+                    let index = cluster[j];
+                    let node = this.data.nodes[index];
+
+                    if (node.style) {
+                        node.style.color = color;
+                    } else {
+                        node.style = { color: color };
+                    }
+
+                }
+            }
+        }
+
         const focusNeighborhood = (id) => {
             let idSet = new Set();
             let nodes = data.nodes,
@@ -235,10 +274,14 @@ class ForceDirectedGraph extends React.Component {
                     edge.style = { color: 'rgba(255,255,255,.6)' };
                 }
 
-                for (let i = 0; i < nodes.length; i++) {
-                    let node = nodes[i];
-                    node.style = { color: 'rgba(5, 159, 217, .9)' };
-                    drawNode(node);
+                if (!this.clusters) {                
+                    for (let i = 0; i < nodes.length; i++) {
+                        let node = nodes[i];
+                        node.style = { color: '#059fd9' };
+                        // drawNode(node);
+                    }
+                } else {
+                    getClusterColor(this.clusters);
                 }
 
                 zoom();
@@ -287,6 +330,10 @@ class ForceDirectedGraph extends React.Component {
             }
             zoom();
         }
+
+        // functions used by other components
+        this.focusNeighborhood = focusNeighborhood.bind(this);
+
 
         let that = this;
         d3.select(node).select('#mainCanvas').on('mousemove', function(e) {
@@ -402,6 +449,10 @@ class ForceDirectedGraph extends React.Component {
         }
     }
 
+    searching(...args) {
+        console.log(args, this);
+    }
+
     render() {
 
         const filters = [
@@ -422,25 +473,17 @@ class ForceDirectedGraph extends React.Component {
             }
         }
 
+        let searchBox = <TypeaheadSearch pillType="context" onChange={this.searching} values={[ { value: 'one', label: 'One', context: 'Number' }, { value: 'two', label: 'Two', context: 'Number' }, { value: 'blue', label: 'Blue', context: 'Color' }, { value: 'green', label: 'Green', context: 'Color'
+    }, { value: 'yellow', label: 'Yellow', context: 'Color'}, ]} />
 
+        let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
 
-        let filerButtons = filters.map((d, i) => <a key={i} style={{ backgroundColor: d.color }} className={`fgraph-button ${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</a>);
+        let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
         return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-              <div style={{ width: '166px', height: this.props.height, background: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-
-                <div style={{ display: 'flex', width: '75%', paddingBottom: '17px', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', color: 'white' }}>
-                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.focusedNodeCount || this.data.nodes.length} duration={1500}/><span>Nodes</span></span>
-                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.focusedEdgeCount || this.data.edges.length} duration={1500}/><span>Edges</span></span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    {filerButtons}
-                </div>
-              </div>
-
-
+              <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/>
               <div>
-                <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black' }} ></canvas>
+                <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
 
