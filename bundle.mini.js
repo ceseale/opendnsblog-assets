@@ -11415,7 +11415,8 @@
 
 	        var _this = _possibleConstructorReturn(this, (ForceDirectedGraph.__proto__ || Object.getPrototypeOf(ForceDirectedGraph)).call(this, props));
 
-	        _this.state = { lastFocus: null };
+	        _this.state = { lastFocus: null, selectedValues: [] };
+
 	        _this.data = JSON.parse(JSON.stringify(_this.props.data));
 	        _this.focusOn = [];
 	        _this.onSearch = function (type, ids) {
@@ -11866,11 +11867,9 @@
 	    }, {
 	        key: 'searching',
 	        value: function searching() {
-	            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	                args[_key] = arguments[_key];
-	            }
-
-	            console.log(args, this);
+	            // let input = (d3.select(node).select('.select-input___1XLBC'));
+	            this.setState({ selectedValues: [] });
+	            this.onSearch(null, null);
 	        }
 	    }, {
 	        key: 'render',
@@ -11891,7 +11890,7 @@
 	                }
 	            }
 
-	            var searchBox = _react2.default.createElement(_dplSearch.TypeaheadSearch, { pillType: 'context', onChange: this.searching, values: this.searchOptions });
+	            var searchBox = _react2.default.createElement(_dplSearch.TypeaheadSearch, { selectedValues: this.state.selectedValues, pillType: 'context', onChange: this.searching.bind(this), values: this.searchOptions });
 
 	            var clustersNav = _react2.default.createElement(_Kmeans2.default, { onCluster: function onCluster(data) {
 	                    _this3.clusterCB(data);
@@ -12213,7 +12212,7 @@
 	                            data.push(_node.id);
 	                        }
 	                    }
-
+	                    console.log(data);
 	                    _this2.props.onInputChange('search', data);
 	                });
 	            }
@@ -12227,7 +12226,6 @@
 	            return _react2.default.createElement(
 	                'div',
 	                { style: { width: this.props.width, height: this.props.height, background: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' } },
-	                _react2.default.createElement(_dplMenus.BasicMenu, { menuButtonText: 'Explore By', selectedOptionText: this.menuItems[this.state.current].label, options: this.menuItems, selectHandler: this.selectHandler.bind(this) }),
 	                _react2.default.createElement(
 	                    'div',
 	                    { style: { display: 'flex', width: '75%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', color: 'white' } },
@@ -12251,6 +12249,11 @@
 	                            'Edges'
 	                        )
 	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { style: { width: 182 } },
+	                    _react2.default.createElement(_dplMenus.BasicMenu, { menuButtonText: 'Explore By', selectedOptionText: this.menuItems[this.state.current].label, options: this.menuItems, selectHandler: this.selectHandler.bind(this) })
 	                ),
 	                _react2.default.createElement(
 	                    'div',

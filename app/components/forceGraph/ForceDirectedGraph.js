@@ -12,8 +12,8 @@ import KmeansMenuItem from '../Clustering/Kmeans';
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
         super(props);
+        this.state = { lastFocus: null, selectedValues: [] };
 
-        this.state = { lastFocus: null };
         this.data = JSON.parse(JSON.stringify(this.props.data));
         this.focusOn = [];
         this.onSearch = (type, ids) => {
@@ -459,7 +459,9 @@ class ForceDirectedGraph extends React.Component {
     }
 
     searching(...args) {
-        console.log(args, this);
+        // let input = (d3.select(node).select('.select-input___1XLBC'));
+        this.setState({ selectedValues: [] });
+        this.onSearch(null, null);
     }
 
     render() {
@@ -485,7 +487,7 @@ class ForceDirectedGraph extends React.Component {
         }
 
 
-        let searchBox = <TypeaheadSearch pillType="context" onChange={this.searching} values={this.searchOptions} />
+        let searchBox = <TypeaheadSearch selectedValues={this.state.selectedValues} pillType="context" onChange={this.searching.bind(this)} values={this.searchOptions} />
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
 

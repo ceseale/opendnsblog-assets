@@ -226,7 +226,7 @@ class Menu extends React.Component {
                         data.push(node.id);
                     }
                 }
-
+                console.log(data);
                 this.props.onInputChange('search', data);
             });
         }
@@ -239,12 +239,14 @@ class Menu extends React.Component {
         const centeringStyle = { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' };
         return (
               <div style={{ width: this.props.width, height: this.props.height, background: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
-                <BasicMenu menuButtonText="Explore By" selectedOptionText={this.menuItems[this.state.current].label} options={this.menuItems} selectHandler={this.selectHandler.bind(this)} />
-
                 <div style={{ display: 'flex', width: '75%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', color: 'white' }}>
                     <span style={centeringStyle}><AnimatedNumber stepPrecision={0} value={this.props.focusedNodeCount || this.props.data.nodes.length} duration={1500}/><span>Nodes</span></span>
                     <span style={centeringStyle}><AnimatedNumber stepPrecision={0} value={this.props.focusedEdgeCount || this.props.data.edges.length} duration={1500}/><span>Edges</span></span>
                 </div>
+                <div style={{ width: 182 }} >
+                    <BasicMenu menuButtonText="Explore By" selectedOptionText={this.menuItems[this.state.current].label} options={this.menuItems} selectHandler={this.selectHandler.bind(this)} />
+                </div>
+
                 {/* wraps menu content */}
                 <div style={{ display: 'flex', height: '70%', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
                     {menuContent}
