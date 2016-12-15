@@ -214,7 +214,7 @@ class Menu extends React.Component {
 
     componentDidUpdate() {
         let node = ReactDOM.findDOMNode(this);
-        let input = (d3.select(node).select('input'));
+        let input = (d3.select(node).select('.select-input___1XLBC'));
         let inputNode = input.node();
         if (input[0]) {
             input.on('input', () => {
@@ -236,14 +236,14 @@ class Menu extends React.Component {
 
 
         const menuContent = this.getMenuContent();
-
+        const centeringStyle = { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' };
         return (
               <div style={{ width: this.props.width, height: this.props.height, background: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
-                <BasicMenu menuButtonText="Button Text" selectedOptionText={this.menuItems[this.state.current].label} options={this.menuItems} selectHandler={this.selectHandler.bind(this)} />
+                <BasicMenu menuButtonText="Explore By" selectedOptionText={this.menuItems[this.state.current].label} options={this.menuItems} selectHandler={this.selectHandler.bind(this)} />
 
                 <div style={{ display: 'flex', width: '75%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', color: 'white' }}>
-                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.props.focusedNodeCount || this.props.data.nodes.length} duration={1500}/><span>Nodes</span></span>
-                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><AnimatedNumber stepPrecision={0} value={this.props.focusedEdgeCount || this.props.data.edges.length} duration={1500}/><span>Edges</span></span>
+                    <span style={centeringStyle}><AnimatedNumber stepPrecision={0} value={this.props.focusedNodeCount || this.props.data.nodes.length} duration={1500}/><span>Nodes</span></span>
+                    <span style={centeringStyle}><AnimatedNumber stepPrecision={0} value={this.props.focusedEdgeCount || this.props.data.edges.length} duration={1500}/><span>Edges</span></span>
                 </div>
                 {/* wraps menu content */}
                 <div style={{ display: 'flex', height: '70%', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
