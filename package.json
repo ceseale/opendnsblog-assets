@@ -39,6 +39,7 @@
     "@opendns/dpl-pills": "^5.2.2",
     "@opendns/dpl-scss": "^5.2.2",
     "@opendns/dpl-search": "^5.2.2",
+    "@opendns/dpl-spinner": "^5.2.2",
     "assert": "^1.4.1",
     "blacklist": "^1.1.4",
     "bourbon": "^4.2.7",

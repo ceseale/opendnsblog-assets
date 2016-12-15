@@ -47,6 +47,7 @@ class ForceDirectedGraph extends React.Component {
             }
 
             this.data.nodes = this.data.nodes.filter(d => d);
+            this.createSearchOptions();
 
         }
     }
@@ -57,6 +58,14 @@ class ForceDirectedGraph extends React.Component {
         this.focusNeighborhood(null);
     }
 
+    createSearchOptions() {
+        this.searchOptions = [];
+        for (let i = 0; i < this.data.nodes.length; i++) {
+            let node = this.data.nodes[i];
+
+            this.searchOptions.push({ value: node.id, label: node.id, context: node.type });
+        }
+    }
 
     finishedWork(data) {
         this.data = data;
@@ -456,25 +465,27 @@ class ForceDirectedGraph extends React.Component {
     render() {
 
         const filters = [
-            { type: 'hash', title: 'Hashes', color: '#f37821' },
-            { type: 'domain', title: 'Domains', color: '#f37821'},
-            { type: 'Blocked Domains', title: 'Blocked Domains', color: '#f37821'},
-            { type: 'ip', title: 'IPs', color: '#f37821'},
-            { type: 'email', title: 'Emails', color: '#f37821'},
+            { type: 'hash', title: 'Hashes', color: 'rgba(5, 159, 217, .9)' },
+            { type: 'domain', title: 'Domains', color: 'rgba(5, 159, 217, .9)'},
+            { type: 'Blocked Domains', title: 'Malicious', color: 'rgba(5, 159, 217, .9)'},
+            { type: 'ip', title: 'IPs', color: 'rgba(5, 159, 217, .9)'},
+            { type: 'email', title: 'Emails', color: 'rgba(5, 159, 217, .9)'},
         ];
 
-        for (let i = 0; i < filters.length; i++) {
-            let filter = filters[i];
+        if (this.state.lastFocus) {        
+            for (let i = 0; i < filters.length; i++) {
+                let filter = filters[i];
 
-            if (filter.type === this.state.lastFocus) {
-                filter.class = 'active';
-            } else {
-                filter.class = '';
+                if (filter.type === this.state.lastFocus) {
+                    filter.color = 'rgba(243, 120, 33, .9)';
+                } else {
+                    filter.color = 'rgba(5, 159, 217, .4)';
+                }
             }
         }
 
-        let searchBox = <TypeaheadSearch pillType="context" onChange={this.searching} values={[ { value: 'one', label: 'One', context: 'Number' }, { value: 'two', label: 'Two', context: 'Number' }, { value: 'blue', label: 'Blue', context: 'Color' }, { value: 'green', label: 'Green', context: 'Color'
-    }, { value: 'yellow', label: 'Yellow', context: 'Color'}, ]} />
+
+        let searchBox = <TypeaheadSearch pillType="context" onChange={this.searching} values={this.searchOptions} />
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
 

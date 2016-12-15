@@ -2,6 +2,9 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import KmeansWorker from './Workers/Kmeans';
+import { DPLButton } from '@opendns/dpl-buttons';
+import { AnimatedTextInput } from '@opendns/dpl-formfields';
+import CircleSpinner from '@opendns/dpl-spinner';
 
 class Kmeans extends React.Component {
     constructor(props) {
@@ -10,7 +13,7 @@ class Kmeans extends React.Component {
         this.data = this.props.getData();
         let worker = KmeansWorker(this.onWorkEnd.bind(this), this.onSnapshot.bind(this));
 
-        worker.postMessage({ nodes: this.data.nodes, k: 3, distance: null, snapshotPeriod: 1 });
+        worker.postMessage({ nodes: this.data.nodes, k: 6, distance: null, snapshotPeriod: 1 });
     }
 
     onWorkEnd(data) {
@@ -22,9 +25,10 @@ class Kmeans extends React.Component {
     }
 
     render() {
+
         return (
             <div style={{ color: 'white' }}>
-                <span>gsldfughslhgkjhkfh</span>
+                <CircleSpinner className={'flsdkfjlsdkfj'} width={200} height={200}/>
             </div>
         );
     }
