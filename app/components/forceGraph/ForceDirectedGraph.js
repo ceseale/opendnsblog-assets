@@ -86,6 +86,9 @@ class ForceDirectedGraph extends React.Component {
         const zoom = () => {
             this.lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : this.lastTranslation;
             this.lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : this.lastScale;
+            console.log('*********')
+            console.log(this.lastTranslation, this.lastScale, this.props.depth);
+
             if (this.lastScale && this.lastTranslation) {            
                 context.save();
                 context.clearRect(0, 0, this.props.width, this.props.height);
