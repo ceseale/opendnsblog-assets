@@ -71,31 +71,26 @@ class ForceDirectedGraph extends React.Component {
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         let hiddenContext = d3.select(node).select('.graphHidden').node().getContext('2d');
-        let lastTranslation = null;
-        let lastScale = this.props.initScale;
         let width = this.props.width;
         let height = this.props.height;
         let first = true;
         let radius = 3;
         let zooming = false;
-        this.clusters = null;
-        let x = d3.scale.linear()
-            .domain([0, width])
-            .range([0, width]);
-
-        let y = d3.scale.linear()
-            .domain([0, height])
-            .range([height, 0]);
-
         const colorMap = {};
+
+        this.lastScale = this.props.initScale;
+        this.lastTranslation = this.props.initTranslation;
+        this.clusters = null;
+
+
         const zoom = () => {
-            lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
-            lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
-            if (lastScale && lastTranslation) {            
+            this.lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : this.lastTranslation;
+            this.lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : this.lastScale;
+            if (this.lastScale && this.lastTranslation) {            
                 context.save();
                 context.clearRect(0, 0, this.props.width, this.props.height);
-                context.translate(lastTranslation[0], lastTranslation[1]);
-                context.scale(lastScale, lastScale);
+                context.translate(this.lastTranslation[0], this.lastTranslation[1]);
+                context.scale(this.lastScale, this.lastScale);
                 ended.bind(this)(data);
                 context.restore();
             } else {
@@ -103,19 +98,26 @@ class ForceDirectedGraph extends React.Component {
             }
         }
         
-        const zoomEnd = () => {
+        const zoomEnd = (updateMirror = false) => {
             zooming = false;
-            lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : lastTranslation;
-            lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : lastScale;
-            if (lastScale && lastTranslation) {            
+            this.lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : this.lastTranslation;
+            this.lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : this.lastScale;
+            if (this.lastScale && this.lastTranslation) {            
                 hiddenContext.save();
                 hiddenContext.clearRect(0, 0, this.props.width, this.props.height);
-                hiddenContext.translate(lastTranslation[0], lastTranslation[1]);
-                hiddenContext.scale(lastScale, lastScale);
+                hiddenContext.translate(this.lastTranslation[0], this.lastTranslation[1]);
+                hiddenContext.scale(this.lastScale, this.lastScale);
                 ended.bind(this)(data, true);
                 hiddenContext.restore();
+                if (this.props.onZoomEnd) {
+                    this.props.onZoomEnd(this.lastScale, this.lastTranslation);
+                }
             } else {
                 ended.bind(this)(data);
+            }
+
+            if (updateMirror) {
+                this.onZoomEnd(this.lastTranslation, this.lastScale);
             }
         }
         
@@ -123,22 +125,26 @@ class ForceDirectedGraph extends React.Component {
             zooming = true;
         }
 
+        this.updateZoom = () => {
+            zoom();
+            zoomEnd(false);
+        }
         ended.bind(this)(data);
         ended.bind(this)(data, true);
 
-        let zoomWorker = d3.behavior.zoom().scaleExtent([1, 8]).on('zoom', zoom).on('zoomend', zoomEnd).on('zoomstart', zoomStart);
+        let zoomWorker = d3.behavior.zoom().scaleExtent([ typeof this.props.minZoom === 'number' ? this.props.minZoom : 1, this.props.maxZoom || 8]).on('zoom', zoom).on('zoomend', zoomEnd).on('zoomstart', zoomStart);
         d3.select(node).select('canvas').call(zoomWorker);
 
         const zoomIn = () => {
-            // let newScale = (lastScale || this.props.initScale) + .3;
+            // let newScale = (this.lastScale || this.props.initScale) + .3;
 
             // zoomWorker.scale(newScale);
 
-            // let newTranslate = lastTranslation ? [lastTranslation[0] + (lastTranslation[0] / (newScale - .3) ), lastTranslation[1] + (lastTranslation[1] / newScale - .3)] : [this.props.width / 2, this.props.height / 2];
-            // console.log(lastTranslation);
-            // lastTranslation = [newTranslate[0] - (newTranslate[0] * newScale), newTranslate[1] - (newTranslate[1] * newScale)];
+            // let newTranslate = this.lastTranslation ? [this.lastTranslation[0] + (this.lastTranslation[0] / (newScale - .3) ), this.lastTranslation[1] + (this.lastTranslation[1] / newScale - .3)] : [this.props.width / 2, this.props.height / 2];
+            // console.log(this.lastTranslation);
+            // this.lastTranslation = [newTranslate[0] - (newTranslate[0] * newScale), newTranslate[1] - (newTranslate[1] * newScale)];
 
-            // zoomWorker.translate(lastTranslation);
+            // zoomWorker.translate(this.lastTranslation);
 
             // zoomWorker.event(d3.select(node).select('.graphContainer2'));
         }
@@ -252,7 +258,7 @@ class ForceDirectedGraph extends React.Component {
             return `rgb(${r}, ${g}, ${b})`;
         }
 
-        let clusterColors = ['red', 'green', 'blue', 'orange', 'yellow', 'gray', 'white', 'pink', 'lightgreen', 'lightblue', 'darkorange', 'darkyellow', 'darkgray', 'white'];
+        let clusterColors = ['red', 'green', 'blue', 'orange', 'yellow', 'white', 'pink', 'lightgreen', 'lightblue', 'gray', 'darkorange', 'darkyellow'];
         const getClusterColor = (message) => {
             let clusters = message.clusters;
 
@@ -414,6 +420,7 @@ class ForceDirectedGraph extends React.Component {
         this.changeFocus = (type, color = 'rgba(5, 159, 217, .9)') => {
             let nodes = data.nodes;
             this.focusOn = [];
+
             const resetColors = () => {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
@@ -429,7 +436,7 @@ class ForceDirectedGraph extends React.Component {
                 return focusNeighborhood(this.focusOn);
             } 
 
-            if (type !== 'Blocked Domains') {
+            if (type !== 'Blocked Domains' && !(type.indexOf('match') > -1) ) {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
                     if (node.type === type) {
@@ -456,7 +463,7 @@ class ForceDirectedGraph extends React.Component {
                     let node = nodes[i];
 
                     if (val && node.id.indexOf(val) > -1) {
-                        data.push(node.id);
+                        this.focusOn.push(node.id);
                     }
 
                 }
@@ -466,6 +473,17 @@ class ForceDirectedGraph extends React.Component {
             this.setState({ lastFocus: type });
             focusNeighborhood(this.focusOn);
             
+        }
+
+        // focus callbacks
+        if (this.props.initFilter) {
+            this.changeFocus(this.props.initFilter);
+        } else if (this.props.initCluster) {
+            this.clusterCB(this.props.initCluster);
+        }
+
+        if (this.props.onWorkDone) {
+            this.props.onWorkDone(this.props.depth, Object.assign({}, this.data));
         }
 
     }
@@ -479,9 +497,25 @@ class ForceDirectedGraph extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.data.nodes.length) {      
-            let forceWorker = ForceWorker(this.finishedWork.bind(this), this.progress.bind(this));
-            forceWorker.postMessage(this.data);
+
+        if (!this.props.positionedData) {
+            if (this.props.data.nodes.length) {      
+                let forceWorker = ForceWorker(this.finishedWork.bind(this), this.progress.bind(this));
+                forceWorker.postMessage(this.data);
+            }            
+        } else {
+            if (this.props.data.nodes.length) {      
+                this.finishedWork(this.props.data);
+            }  
+        }
+
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if(nextProps.initScale !== this.props.initScale || nextProps.initTranslation !== this.props.initTranslation) {
+            this.lastTranslation = nextProps.initTranslation;
+            this.lastScale = nextProps.initScale;
+            this.updateZoom()
         }
     }
 
@@ -513,7 +547,6 @@ class ForceDirectedGraph extends React.Component {
             }
         }
 
-
         let searchBox = <TypeaheadSearch selectedValues={this.state.selectedValues} pillType="context" onChange={this.searching.bind(this)} values={this.searchOptions} />
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
@@ -534,6 +567,7 @@ class ForceDirectedGraph extends React.Component {
 
 // define propTypes
 ForceDirectedGraph.propTypes = {
+    positionedData: PropTypes.bool,
     data: PropTypes.object,
     width: PropTypes.number,
     height: PropTypes.number,
@@ -541,9 +575,12 @@ ForceDirectedGraph.propTypes = {
     initScale: PropTypes.number,
     initTranslation: PropTypes.object,
     hasMenu: PropTypes.bool,
-    zoomMax: PropTypes.number,
-    initFilter: PropTypes.array,
-    initCluster: PropTypes.array
+    maxZoom: PropTypes.number,
+    minZoom: PropTypes.number,
+    initFilter: PropTypes.string,
+    initCluster: PropTypes.object,
+    onWorkDone: PropTypes.func,
+    onZoomEnd: PropTypes.func
 };
 
 export default ForceDirectedGraph;
