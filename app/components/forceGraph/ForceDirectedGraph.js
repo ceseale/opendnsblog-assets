@@ -53,7 +53,6 @@ class ForceDirectedGraph extends React.Component {
     }
 
     clusterCB (clusterData) {
-        // console.log(null)
         this.clusters = clusterData;
         this.focusNeighborhood(null);
     }
@@ -80,6 +79,13 @@ class ForceDirectedGraph extends React.Component {
         let radius = 3;
         let zooming = false;
         this.clusters = null;
+        let x = d3.scale.linear()
+            .domain([0, width])
+            .range([0, width]);
+
+        let y = d3.scale.linear()
+            .domain([0, height])
+            .range([height, 0]);
 
         const colorMap = {};
         const zoom = () => {
@@ -246,12 +252,19 @@ class ForceDirectedGraph extends React.Component {
             return `rgb(${r}, ${g}, ${b})`;
         }
 
+        let clusterColors = ['red', 'green', 'blue', 'orange', 'yellow', 'gray', 'white', 'pink', 'lightgreen', 'lightblue', 'darkorange', 'darkyellow', 'darkgray', 'white'];
         const getClusterColor = (message) => {
             let clusters = message.clusters;
-            var colors = ['red', 'green', 'blue', 'orange', 'yellow'];
+
+            if (clusters.length > clusterColors.length) {
+                for (let i = clusterColors.length; i < clusters.length; i++) {
+                    clusterColors[i] = getRandomColor();
+                 }
+            }
             for (let i = 0; i < clusters.length; i++) {
                 let cluster = clusters[i];
-                let color = colors[i];
+                let color = clusterColors[i];
+
                 for (let j = 0; j < cluster.length; j++) {
                     let index = cluster[j];
                     let node = this.data.nodes[index];
@@ -357,7 +370,9 @@ class ForceDirectedGraph extends React.Component {
                 if(colorMap[`rgb(${col[0]}, ${col[1]}, ${col[2]})`]) {
 
                     focusNeighborhood(d.id)
+                    let nodeId = d.id;
                     if (d.type === 'hash') {
+
                         d.id = d.id.split('').slice(0, 15).join('') + '...';
                     }
 
@@ -367,11 +382,11 @@ class ForceDirectedGraph extends React.Component {
                     let href;
 
                     if (d.type === 'hash') {
-                        href = 'https://investigate.opendns.com/sample-view/' + d.id;
+                        href = 'https://investigate.opendns.com/sample-view/' + nodeId;
                     } else if (d.type === 'ip') {
-                        href = ('https://investigate.opendns.com/ip-view/' + d.id);
+                        href = ('https://investigate.opendns.com/ip-view/' + nodeId);
                     } else {
-                        href = ('https://investigate.opendns.com/domain-view/name/' + d.id + '/view');
+                        href = ('https://investigate.opendns.com/domain-view/name/' + nodeId + '/view');
                     }
 
                     let relPosition = d3.mouse(node);
@@ -385,7 +400,7 @@ class ForceDirectedGraph extends React.Component {
                     
 
                 } else {
-                    d3.select(node).selectAll('#graph-tooltip').remove();
+                    d3.selectAll('#graph-tooltip').remove();
                     focusNeighborhood(that.focusOn);
                 }
             }
@@ -396,7 +411,7 @@ class ForceDirectedGraph extends React.Component {
             node.style = { color: color };
         }
 
-        this.changeFocus = (type, color) => {
+        this.changeFocus = (type, color = 'rgba(5, 159, 217, .9)') => {
             let nodes = data.nodes;
             this.focusOn = [];
             const resetColors = () => {
@@ -434,6 +449,18 @@ class ForceDirectedGraph extends React.Component {
                         changeNodeColors(node, 'rgba(5, 159, 217, .5)');
                     }
                 }
+            } else if (type.indexOf('match') > -1) {
+                let val = type.split(':')[1];
+
+                for (let i = 0; i < nodes.length; i++) {
+                    let node = nodes[i];
+
+                    if (val && node.id.indexOf(val) > -1) {
+                        data.push(node.id);
+                    }
+
+                }
+
             }
 
             this.setState({ lastFocus: type });
@@ -494,12 +521,11 @@ class ForceDirectedGraph extends React.Component {
         let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
         return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-              <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/>
+              { this.props.hasMenu === false ? null : <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/> }
               <div>
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
-
             </div>
         );
     }
@@ -513,7 +539,11 @@ ForceDirectedGraph.propTypes = {
     height: PropTypes.number,
     depth: PropTypes.number,
     initScale: PropTypes.number,
-    initTranslation: PropTypes.object
+    initTranslation: PropTypes.object,
+    hasMenu: PropTypes.bool,
+    zoomMax: PropTypes.number,
+    initFilter: PropTypes.array,
+    initCluster: PropTypes.array
 };
 
 export default ForceDirectedGraph;

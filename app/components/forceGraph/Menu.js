@@ -10,7 +10,6 @@ class Menu extends React.Component {
         super(props);
         this.state = { current: 0 };
         this.menuItems = [ { label: 'Filters', value: 0 }, { label: 'Search', value: 1 }, { label: 'Cluster', value: 2 } ];
-        // console.log(this.props.data);
         // console.time('cluster')
         // // this.markovCluster(this.props.data.nodes, this.props.data.edges);
         // console.timeEnd('cluster')
@@ -226,7 +225,6 @@ class Menu extends React.Component {
                         data.push(node.id);
                     }
                 }
-                console.log(data);
                 this.props.onInputChange('search', data);
             });
         }

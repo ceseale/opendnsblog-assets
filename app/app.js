@@ -26,11 +26,24 @@ let App = {
           link.href = fileName
 
           head.appendChild(link)
-        }
+        } 
 
         // addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
         addCss('./bundle.mini.css')
         // d3.selectAll('.vis-container').style('display', 'flex');
+
+        d3.selectAll('.focusedGraph').datum(function() {
+          const props = Object.assign({}, this.dataset);
+          props.width = Number(props.width);
+          props.height = Number(props.height);
+          props.depth = Number(props.depth);
+          props.hasMenu = Boolean(props.menu);
+          props.zoomMax = Number(props.zoomMax);
+          props.initScale = Number(props.initScale);
+          // props
+
+          ReactDOM.render(<ForceGraph {...props} data={data} />, this);
+        });
 
         const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
         // render aplication

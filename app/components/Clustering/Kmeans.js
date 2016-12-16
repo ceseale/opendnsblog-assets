@@ -36,14 +36,12 @@ class Kmeans extends React.Component {
     }
 
     onSnapshot(data) {
-        console.log(data);
         this.props.onCluster(data)
     }
 
     render() {
         const centeringStyle = { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' };
 
-        console.log(this.state.k)
         return (
             <div style={Object.assign(centeringStyle, { color: 'white' })}>
                 <AnimatedTextInput keyUpHandler={this.onChange.bind(this)} label="# of Clusters (k-means)" value={this.state.k} name="cluster_count" isRequired={true} validationMessage="" regex="[1-9]" maxLength={2} />
