@@ -46,6 +46,7 @@ class ForceDirectedGraph extends React.Component {
                 }
             }
 
+
             this.data.nodes = this.data.nodes.filter(d => d);
             this.createSearchOptions();
 
@@ -133,7 +134,7 @@ class ForceDirectedGraph extends React.Component {
         ended.bind(this)(data);
         ended.bind(this)(data, true);
 
-        let zoomWorker = d3.behavior.zoom().scaleExtent([ typeof this.props.minZoom === 'number' ? this.props.minZoom : 1, this.props.maxZoom || 8]).on('zoom', zoom).on('zoomend', zoomEnd).on('zoomstart', zoomStart);
+        let zoomWorker = d3.behavior.zoom().scaleExtent([ typeof this.props.minZoom === 'number' ? this.props.minZoom : .1, this.props.maxZoom || 8]).on('zoom', zoom).on('zoomend', zoomEnd).on('zoomstart', zoomStart);
         d3.select(node).select('canvas').call(zoomWorker);
 
         const zoomIn = () => {
