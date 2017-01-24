@@ -36,10 +36,6 @@ class Kmeans extends React.Component {
     }
 
     onSnapshot(data) {
-        if (data.type === 'end') {
-            console.log('start')
-            console.log(JSON.stringify(data.clusters));
-        }
         this.props.onCluster(data)
     }
 

@@ -552,11 +552,11 @@ class ForceDirectedGraph extends React.Component {
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
 
-        let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
+        let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color, margin: 10 }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
         return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
               { this.props.hasMenu === false ? null : <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/> }
-              <div>
+              <div style={{ cursor: 'crosshair' }}>
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>

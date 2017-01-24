@@ -55,6 +55,7 @@
     "react-animated-number": "^0.4.2",
     "react-codemirror": "^0.2.6",
     "react-dom": "^15.3.2",
+    "react-dropzone": "^3.9.1",
     "react-json-tree": "^0.10.0",
     "react-native-listener": "^1.0.1",
     "tayden-clusterfck": "^0.7.0",

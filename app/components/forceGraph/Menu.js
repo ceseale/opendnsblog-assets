@@ -246,7 +246,7 @@ class Menu extends React.Component {
                 </div>
 
                 {/* wraps menu content */}
-                <div style={{ display: 'flex', height: '70%', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
+                <div style={{ display: 'flex', height: '70%', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
                     {menuContent}
                 </div>
               </div>
