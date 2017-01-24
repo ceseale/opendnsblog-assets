@@ -16,10 +16,16 @@ let App = {
      */
 
     run() {
-      ReactDOM.render(
-          <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} depth={3} data={data} />,
-          document.getElementById('container')
-      );
+      const app = () => {      
+        ReactDOM.render(
+            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} depth={3} data={data} />,
+            document.getElementById('container')
+        );
+      }
+
+      app();
+
+      window.onresize = app;
     }
 
 };

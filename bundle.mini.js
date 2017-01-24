@@ -10990,7 +10990,13 @@
 	     */
 
 	    run: function run() {
-	        _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: window.innerWidth - 188, height: window.innerHeight, depth: 3, data: _freeppstopBIG2.default }), document.getElementById('container'));
+	        var app = function app() {
+	            _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: window.innerWidth - 188, height: window.innerHeight, depth: 3, data: _freeppstopBIG2.default }), document.getElementById('container'));
+	        };
+
+	        app();
+
+	        window.onresize = app;
 	    }
 	};
 
