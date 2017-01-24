@@ -36,7 +36,6 @@ let App = {
         const updateMirror = (name, scale, translation) => {
           postComponentData[name].initScale = scale;
           postComponentData[name].initTranslation = translation;
-          console.log(postComponentData[name].el)
           ReactDOM.render(<ForceGraph {...postComponentData[name]} />, postComponentData[name].el);
         }
 

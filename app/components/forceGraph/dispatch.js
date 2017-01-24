@@ -19,7 +19,6 @@ function workerCode() {
     var simulation = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody())
         .force("link", d3.forceLink(edges).distance(20).strength(1).id(function (d) {
-          // console.log(d);
           return d.id;
         }))
         .force("x", d3.forceX())
