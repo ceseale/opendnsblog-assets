@@ -16,92 +16,12 @@ let App = {
      */
 
     run() {
-        function addCss(fileName) {
-
-          var head = document.head
-            , link = document.createElement('link')
-
-          link.type = 'text/css'
-          link.rel = 'stylesheet'
-          link.href = fileName
-
-          head.appendChild(link)
-        } 
-
-        addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css')
-        // addCss('./bundle.mini.css')
-        // d3.selectAll('.vis-container').style('display', 'flex');
-        const postComponentData = {};
-
-        const updateMirror = (name, scale, translation) => {
-          postComponentData[name].initScale = scale;
-          postComponentData[name].initTranslation = translation;
-          ReactDOM.render(<ForceGraph {...postComponentData[name]} />, postComponentData[name].el);
-        }
-
-        const createPostComponents = (dataDepth, positionData) => {
-            d3.selectAll('.focusedGraph').datum(function() {
-              if (dataDepth === Number(this.dataset.depth)) {          
-                const props = postComponentData[this.dataset.name] || Object.assign({}, this.dataset);
-
-                if (!postComponentData[this.dataset.name]) {                
-                  props.width = Number(props.width);
-                  props.height = Number(props.height);
-                  props.depth = Number(props.depth);
-                  props.hasMenu = Boolean(props.menu);
-                  props.minZoom = Number(props.minzoom);
-                  props.maxZoom = Number(props.maxzoom);
-                  props.initScale = Number(props.initscale);
-                  props.initTranslation = props.inittranslation ? JSON.parse(props.inittranslation) : null;
-                  props.mirror = props.mirror;
-                  props.initFilter = props.initfilter;
-                  props.initCluster = props.initcluster ? { type: 'end', clusters: clusters[String(props.initcluster)] } : null;
-                  props.positionedData = true;
-                  props.data = positionData;
-                  props.el = this;
-                  if (props.mirror) {
-                    props.onZoomEnd = function(trans, scale) {
-                      updateMirror(this.mirror, trans, scale);
-                    }
-                  }
-
-                  postComponentData[this.dataset.name] = props;
-                }
-                // props
-                ReactDOM.render(<ForceGraph {...props} />, this);
-              } else if(dataDepth === 'init') {
-                ReactDOM.render(<div style={{ width: Number(this.dataset.width), height: Number(this.dataset.height) }}/>, this);
-              }
-            });
-        }
-        
-        createPostComponents('init'); // init with empty div
-        const getItemString = (type, data, itemType, itemString) => (<span>{ (data.type || data.depth) || itemString }</span>);
-        // render aplication
-        for (let depth = 1; depth < 5; depth++) {
-          if (depth === 4) {
-            ReactDOM.render(
-                <ForceGraph width={760 - 188} height={340} maxZoom={22} depth={depth} onWorkDone={createPostComponents} initScale={0.14906360904132906} data={data} />,
-                document.getElementById(`fgraph-container${depth}`)
-            );
-          } else if (depth === 3) {
-            ReactDOM.render(
-                <ForceGraph width={760 - 188} height={340} depth={depth} onWorkDone={createPostComponents} initScale={0.390663940086158} data={data} />,
-                document.getElementById(`fgraph-container${depth}`)
-            );
-          } else {          
-            ReactDOM.render(
-                <ForceGraph width={760 - 188} height={340} depth={depth} onWorkDone={createPostComponents} data={data} />,
-                document.getElementById(`fgraph-container${depth}`)
-            );
-          }  
-
-
-
-        }
-
-
+      ReactDOM.render(
+          <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} depth={3} data={data} />,
+          document.getElementById('container')
+      );
     }
+
 };
 
 export default App;

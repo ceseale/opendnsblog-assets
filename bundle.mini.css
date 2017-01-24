@@ -1,3 +1,6 @@
+body {
+  margin: 0; }
+
 .dpl-spinner-cirle {
   width: 70px;
   height: 70px; }

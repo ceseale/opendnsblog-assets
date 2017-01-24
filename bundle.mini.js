@@ -10946,7 +10946,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _react = __webpack_require__(7);
@@ -10985,90 +10985,13 @@
 
 	var App = {
 
-	  /**
-	   * Run application
-	   */
+	    /**
+	     * Run application
+	     */
 
-	  run: function run() {
-	    function addCss(fileName) {
-
-	      var head = document.head,
-	          link = document.createElement('link');
-
-	      link.type = 'text/css';
-	      link.rel = 'stylesheet';
-	      link.href = fileName;
-
-	      head.appendChild(link);
+	    run: function run() {
+	        _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: window.innerWidth - 188, height: window.innerHeight, depth: 3, data: _freeppstopBIG2.default }), document.getElementById('container'));
 	    }
-
-	    addCss('https://rawgit.com/ceseale/opendnsblog-assets/fgraph/bundle.mini.css');
-	    // addCss('./bundle.mini.css')
-	    // d3.selectAll('.vis-container').style('display', 'flex');
-	    var postComponentData = {};
-
-	    var updateMirror = function updateMirror(name, scale, translation) {
-	      postComponentData[name].initScale = scale;
-	      postComponentData[name].initTranslation = translation;
-	      console.log(postComponentData[name].el);
-	      _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, postComponentData[name]), postComponentData[name].el);
-	    };
-
-	    var createPostComponents = function createPostComponents(dataDepth, positionData) {
-	      d3.selectAll('.focusedGraph').datum(function () {
-	        if (dataDepth === Number(this.dataset.depth)) {
-	          var props = postComponentData[this.dataset.name] || Object.assign({}, this.dataset);
-
-	          if (!postComponentData[this.dataset.name]) {
-	            props.width = Number(props.width);
-	            props.height = Number(props.height);
-	            props.depth = Number(props.depth);
-	            props.hasMenu = Boolean(props.menu);
-	            props.minZoom = Number(props.minzoom);
-	            props.maxZoom = Number(props.maxzoom);
-	            props.initScale = Number(props.initscale);
-	            props.initTranslation = props.inittranslation ? JSON.parse(props.inittranslation) : null;
-	            props.mirror = props.mirror;
-	            props.initFilter = props.initfilter;
-	            props.initCluster = props.initcluster ? { type: 'end', clusters: clusters[String(props.initcluster)] } : null;
-	            props.positionedData = true;
-	            props.data = positionData;
-	            props.el = this;
-	            if (props.mirror) {
-	              props.onZoomEnd = function (trans, scale) {
-	                updateMirror(this.mirror, trans, scale);
-	              };
-	            }
-
-	            postComponentData[this.dataset.name] = props;
-	          }
-	          // props
-	          _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, props), this);
-	        } else if (dataDepth === 'init') {
-	          _reactDom2.default.render(_react2.default.createElement('div', { style: { width: Number(this.dataset.width), height: Number(this.dataset.height) } }), this);
-	        }
-	      });
-	    };
-
-	    createPostComponents('init'); // init with empty div
-	    var getItemString = function getItemString(type, data, itemType, itemString) {
-	      return _react2.default.createElement(
-	        'span',
-	        null,
-	        data.type || data.depth || itemString
-	      );
-	    };
-	    // render aplication
-	    for (var depth = 1; depth < 5; depth++) {
-	      if (depth === 4) {
-	        _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: 760 - 188, height: 340, maxZoom: 22, depth: depth, onWorkDone: createPostComponents, initScale: 0.14906360904132906, data: _freeppstopBIG2.default }), document.getElementById('fgraph-container' + depth));
-	      } else if (depth === 3) {
-	        _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: 760 - 188, height: 340, depth: depth, onWorkDone: createPostComponents, initScale: 0.390663940086158, data: _freeppstopBIG2.default }), document.getElementById('fgraph-container' + depth));
-	      } else {
-	        _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: 760 - 188, height: 340, depth: depth, onWorkDone: createPostComponents, data: _freeppstopBIG2.default }), document.getElementById('fgraph-container' + depth));
-	      }
-	    }
-	  }
 	};
 
 	exports.default = App;
@@ -11553,8 +11476,6 @@
 	            var zoom = function zoom() {
 	                _this2.lastTranslation = d3.event && d3.event.type === 'zoom' ? d3.event.translate : _this2.lastTranslation;
 	                _this2.lastScale = d3.event && d3.event.type === 'zoom' ? d3.event.scale : _this2.lastScale;
-	                console.log('*********');
-	                console.log(_this2.lastTranslation, _this2.lastScale, _this2.props.depth);
 
 	                if (_this2.lastScale && _this2.lastTranslation) {
 	                    context.save();
@@ -12443,7 +12364,6 @@
 	    }
 
 	    var simulation = d3.forceSimulation(nodes).force("charge", d3.forceManyBody()).force("link", d3.forceLink(edges).distance(20).strength(1).id(function (d) {
-	      // console.log(d);
 	      return d.id;
 	    })).force("x", d3.forceX()).force("y", d3.forceY()).stop();
 
