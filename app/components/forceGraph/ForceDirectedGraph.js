@@ -46,7 +46,6 @@ class ForceDirectedGraph extends React.Component {
                 }
             }
 
-
             this.data.nodes = this.data.nodes.filter(d => d);
             this.createSearchOptions();
 
@@ -494,8 +493,18 @@ class ForceDirectedGraph extends React.Component {
         let node = ReactDOM.findDOMNode(this);
         let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
         context.clearRect(0, 0, this.props.width, this.props.height);
+        context.font = this.getFont(context);
         context.fillStyle = 'rgba(5, 159, 217, .9)';
         context.fillText((data.progress * 100).toFixed(0) + '%', this.props.width / 2, this.props.height / 2);
+    }
+
+    getFont(context) {
+        var fontBase = this.props.width,                   // selected default width for canvas
+            fontSize = 90;                     // default size for font
+        var ratio = fontSize / fontBase;
+        var size = this.props.width * ratio;
+        
+        return (size|0) + 'px sans-serif';
     }
 
     componentDidMount() {
@@ -555,7 +564,7 @@ class ForceDirectedGraph extends React.Component {
 
         let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color, margin: 10 }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
         return (
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', filter: this.props.blur ? 'blur(3px)' : 'blur(0px)' }}>
               { this.props.hasMenu === false ? null : <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/> }
               <div style={{ cursor: 'crosshair' }}>
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
@@ -582,7 +591,8 @@ ForceDirectedGraph.propTypes = {
     initFilter: PropTypes.string,
     initCluster: PropTypes.object,
     onWorkDone: PropTypes.func,
-    onZoomEnd: PropTypes.func
+    onZoomEnd: PropTypes.func,
+    blur: PropTypes.bool
 };
 
 export default ForceDirectedGraph;
