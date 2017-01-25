@@ -47,9 +47,9 @@ class ForceDirectedGraph extends React.Component {
             }
 
             this.data.nodes = this.data.nodes.filter(d => d);
-            this.createSearchOptions();
-
         }
+        
+        this.createSearchOptions();
     }
 
     clusterCB (clusterData) {
@@ -58,6 +58,7 @@ class ForceDirectedGraph extends React.Component {
     }
 
     createSearchOptions() {
+        console.log('fldskjflsdkjf');
         this.searchOptions = [];
         for (let i = 0; i < this.data.nodes.length; i++) {
             let node = this.data.nodes[i];
@@ -558,6 +559,7 @@ class ForceDirectedGraph extends React.Component {
             }
         }
 
+        console.log(this.searchOptions);
         let searchBox = <TypeaheadSearch selectedValues={this.state.selectedValues} pillType="context" onChange={this.searching.bind(this)} values={this.searchOptions} />
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
