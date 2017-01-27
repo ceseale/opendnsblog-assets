@@ -8,48 +8,76 @@ import { DPLButton } from '@opendns/dpl-buttons';
 import { TypeaheadSearch } from '@opendns/dpl-search';
 import Menu from './Menu';
 import KmeansMenuItem from '../Clustering/Kmeans';
+const throttle = require('lodash.throttle');
+const request = require('browser-request');
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { lastFocus: null, selectedValues: [] };
+        this.initData(this.props.data);
+    }
 
-        this.data = JSON.parse(JSON.stringify(this.props.data));
-        this.focusOn = [];
-        this.onSearch = (type, ids) => {
-            this.focusOn = ids;
-            this.focusNeighborhood(this.focusOn);
-            this.setState({ lastFocus: type });
+    initData(data) {
+        this.raw = data;
+        let demoName = '';
+        if (this.raw.nodes[0].id === 'freepps.top') {
+            demoName = 'freeppstop';
         }
+
+        this.dataAtDepth = {};
+        const getMaxDepth = () => {
+            return Math.max.apply(null, this.raw.nodes.map(node => node.depth));
+        }
+        this.maxDepth = getMaxDepth();
+        if (!this.state) {
+            this.state = { lastFocus: null, selectedValues: [], currentDepth: this.props.depth || this.maxDepth, progressAtDepth: {}, currentDemo: demoName };
+        } else {
+            this.setState({ lastFocus: null, selectedValues: [], currentDepth: this.props.depth || this.maxDepth, progressAtDepth: {} });
+        }
+
+        for (let i = 1; i < this.maxDepth + 1; i++) {
+            this.createGraphData(i);
+        }
+    }
+
+    createGraphData(depth) {
+        this.focusOn = [];
+        this.data = JSON.parse(JSON.stringify(this.raw));
         this.clusters = null;
         let edgeSet = new Set();
 
-
-        if (this.props.depth !== undefined) {
-            for (let i = 0; i < this.data.edges.length; i++) {
-                let edge = this.data.edges[i];
-                if ((edge.depth) > this.props.depth - 0.5) {
-                    delete this.data.edges[i];
-                } else {
-                    edgeSet.add(edge.src);
-                    edgeSet.add(edge.dst);
-                }
+        for (let i = 0; i < this.data.edges.length; i++) {
+            let edge = this.data.edges[i];
+            if (edge.depth > depth - 0.5) {
+                delete this.data.edges[i];
+            } else {
+                edgeSet.add(edge.src);
+                edgeSet.add(edge.dst);
             }
-
-            this.data.edges = this.data.edges.filter(d => d);
-
-            for (let i = 0; i < this.data.nodes.length; i++) {
-                let node = this.data.nodes[i];
-
-                if (!edgeSet.has(node.id)) {
-                    delete this.data.nodes[i];
-                }
-            }
-
-            this.data.nodes = this.data.nodes.filter(d => d);
         }
-        
+
+        this.data.edges = this.data.edges.filter(d => d);
+
+        for (let i = 0; i < this.data.nodes.length; i++) {
+            let node = this.data.nodes[i];
+
+            if (!edgeSet.has(node.id)) {
+                delete this.data.nodes[i];
+            }
+        }
+
+        this.data.nodes = this.data.nodes.filter(d => d);
+
         this.createSearchOptions();
+
+        this.dataAtDepth[depth] = { data: this.data, searchOptions: this.searchOptions };
+
+    }
+
+    onSearch(type, ids) {
+        this.focusOn = ids;
+        this.focusNeighborhood(this.focusOn);
+        this.setState({ lastFocus: type });
     }
 
     clusterCB (clusterData) {
@@ -58,7 +86,6 @@ class ForceDirectedGraph extends React.Component {
     }
 
     createSearchOptions() {
-        console.log('fldskjflsdkjf');
         this.searchOptions = [];
         for (let i = 0; i < this.data.nodes.length; i++) {
             let node = this.data.nodes[i];
@@ -99,6 +126,8 @@ class ForceDirectedGraph extends React.Component {
                 ended.bind(this)(data);
             }
         }
+
+        this.zoom = zoom;
         
         const zoomEnd = (updateMirror = false) => {
             zooming = false;
@@ -491,16 +520,25 @@ class ForceDirectedGraph extends React.Component {
     }
 
     progress(data) {
-        let node = ReactDOM.findDOMNode(this);
-        let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
-        context.clearRect(0, 0, this.props.width, this.props.height);
-        context.font = this.getFont(context);
-        context.fillStyle = 'rgba(5, 159, 217, .9)';
-        context.fillText((data.progress * 100).toFixed(0) + '%', this.props.width / 2, this.props.height / 2);
+        window.testing = this;
+        const temp = Object.assign({}, this.state.progressAtDepth);
+        temp[data.depth] = (data.progress * 100).toFixed(0) + '%';
+        throttle(() => {
+            this.setState({ progressAtDepth: temp });
+        }, 200)();
+
+        if (data.depth === this.state.currentDepth) {
+            let node = ReactDOM.findDOMNode(this);
+            let context = d3.select(node).select('.graphContainer2').node().getContext('2d');
+            context.clearRect(0, 0, this.props.width, this.props.height);
+            context.font = this.getFont(context);
+            context.fillStyle = 'rgba(5, 159, 217, .9)';
+            context.fillText((data.progress * 100).toFixed(0) + '%', this.props.width / 2, this.props.height / 2);
+        }
     }
 
     getFont(context) {
-        var fontBase = this.props.width,                   // selected default width for canvas
+        var fontBase = this.props.width,       // selected default width for canvas
             fontSize = 90;                     // default size for font
         var ratio = fontSize / fontBase;
         var size = this.props.width * ratio;
@@ -508,19 +546,73 @@ class ForceDirectedGraph extends React.Component {
         return (size|0) + 'px sans-serif';
     }
 
-    componentDidMount() {
-
-        if (!this.props.positionedData) {
-            if (this.props.data.nodes.length) {      
-                let forceWorker = ForceWorker(this.finishedWork.bind(this), this.progress.bind(this));
-                forceWorker.postMessage(this.data);
-            }            
-        } else {
-            if (this.props.data.nodes.length) {      
-                this.finishedWork(this.props.data);
-            }  
+    setPositionedData(depth, data) {
+        this.dataAtDepth[depth].positionData = data;
+        if (this.state.currentDepth === depth) {
+            this.finishedWork(data);
         }
 
+    }
+
+    onChangeDepth(depth) {
+        const data = this.dataAtDepth[depth];
+
+        if (data.positionData) {
+            this.data = data.data;
+            this.searchOptions = data.searchOptions;
+            this.finishedWork(data.positionData);
+        } else {
+            this.data = { nodes: [], edges: [] };
+            this.finishedWork(this.data);
+        }
+        this.focusOn = null;
+        this.focusNeighborhood(null);
+        this.changeFocus();
+        this.setState({ currentDepth: depth, lastFocus: null });
+
+    }
+
+    setPositionData(depth) {
+        const data = this.dataAtDepth[depth].data;
+
+        if (data && data.nodes.length && !data.positionData) {
+            let forceWorker = ForceWorker((data) => { this.setPositionedData(depth, data) }, this.progress.bind(this), depth);
+            this.dataAtDepth[depth].forceWorker = forceWorker;
+            forceWorker.postMessage(data);
+        } else if (data && data.nodes.length && data.positionData) {
+            this.finishedWork(this.raw);
+        }
+    }
+
+    changeDemo(name) {
+        if (name !== this.state.currentDemo) {        
+            request.get(`app/${name}.json`, (err, res) => {
+                const raw = (JSON.parse(res.response));
+                for (let depth in this.dataAtDepth) {
+                    this.dataAtDepth[depth].forceWorker.kill();
+                }
+
+                this.data = { nodes: [], edges: [] };
+                this.finishedWork(this.data);
+                this.focusOn = null;
+                this.focusNeighborhood(null);
+                this.changeFocus();
+                this.setState({ currentDemo: name });
+                this.initData(raw);
+                for (let i = 1; i < this.maxDepth + 1; i++) {
+                    this.setPositionData(i);
+                }
+            })
+        }
+    }
+
+    componentDidMount() {
+        // will start workers for each depth
+        if (this.raw && this.raw.nodes) {
+            for (let i = 1; i < this.maxDepth + 1; i++) {
+                this.setPositionData(i);
+            }
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -531,10 +623,23 @@ class ForceDirectedGraph extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+            this.zoom();
+        }
+    }
+
     searching(...args) {
         // let input = (d3.select(node).select('.select-input___1XLBC'));
         this.setState({ selectedValues: [] });
         this.onSearch(null, null);
+    }
+
+    componentWillUnmount() {
+        for (let depth in this.dataAtDepth) {
+            this.dataAtDepth[depth].forceWorker.kill();
+        }
+        this.progress = () => {};
     }
 
     render() {
@@ -559,12 +664,28 @@ class ForceDirectedGraph extends React.Component {
             }
         }
 
-        console.log(this.searchOptions);
         let searchBox = <TypeaheadSearch selectedValues={this.state.selectedValues} pillType="context" onChange={this.searching.bind(this)} values={this.searchOptions} />
 
         let clustersNav = <KmeansMenuItem onCluster={(data) => { this.clusterCB(data); }} getData={() => { return this.data }}/>;
 
         let filerButtons = filters.map((d, i) => <DPLButton key={i} style={{ backgroundColor: d.color, margin: 10 }} className={`${d.class}`} onClick={() => ( this.changeFocus(d.type, d.color) )}>{d.title}</DPLButton>);
+
+        let depthButtons = [];
+
+        for (let depth = 1; depth < this.maxDepth + 1; depth++) {
+            const progress = this.state.progressAtDepth[depth];
+            const isDone = progress === '100%';
+            depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? depth : progress}</DPLButton>)
+        }
+
+        let demoData = [];
+
+        var files = ['194856176', 'clickherenowpw', 'freeppstop', 'jdsbrainwavecom', 'wwwdtsedgecom', 'yarblru']
+        for (let i = 0; i < files.length; i++) {
+            const name = files[i];
+            demoData.push(<DPLButton style={{ backgroundColor: this.state.currentDemo === name ? '#35466e' : null, margin: 5, padding: 0 }} onClick={() => {this.changeDemo(name)}}>{name}</DPLButton>)
+        }
+
         return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', filter: this.props.blur ? 'blur(3px)' : 'blur(0px)' }}>
               { this.props.hasMenu === false ? null : <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/> }
@@ -572,6 +693,20 @@ class ForceDirectedGraph extends React.Component {
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
+              <div style={{ display: 'flex', color: 'white', width: this.props.width, bottom: 0, right: 0, position: 'fixed', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <span>View By Depth</span>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%', padding: 10 }}>
+                    {depthButtons}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', color: 'white', width: '188px', bottom: 0, left: 0, position: 'fixed', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <span>Datasets Available</span>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', width: '79%', padding: 10 }}>
+                    {demoData}
+                </div>
+              </div>
+
             </div>
         );
     }
@@ -580,7 +715,6 @@ class ForceDirectedGraph extends React.Component {
 
 // define propTypes
 ForceDirectedGraph.propTypes = {
-    positionedData: PropTypes.bool,
     data: PropTypes.object,
     width: PropTypes.number,
     height: PropTypes.number,

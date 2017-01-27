@@ -27,7 +27,7 @@ let App = {
         }
 
         ReactDOM.render(
-            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} blur={blur} data={data || demodata} />,
+            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} blur={blur} depth={data ? null : 3} data={data || demodata} />,
             appContainer
         );
       }
@@ -45,7 +45,7 @@ let App = {
 
       app();
 
-      window.onresize = app;
+      window.onresize = app.bind(window, null, null, false);
     }
 
 };

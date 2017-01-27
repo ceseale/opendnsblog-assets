@@ -35,7 +35,7 @@ function workerCode() {
 }
 
 
-export default ((cb, progressCb) => {
+export default ((cb, progressCb, depth) => {
   var blobURL = URL.createObjectURL( new Blob([ '(',
 
   workerCode.toString(),
@@ -46,6 +46,7 @@ export default ((cb, progressCb) => {
   var worker = new Worker(blobURL);
   worker.onmessage = function (event) {
       if (event.data.type === 'tick') {
+        event.data.depth = depth;
         progressCb(event.data);
       } else if (event.data.type === 'end') {
         cb(event.data);
