@@ -10984,6 +10984,20 @@
 
 	  run: function run() {
 
+	    function addCss(fileName) {
+
+	      var head = document.head,
+	          link = document.createElement('link');
+
+	      link.type = 'text/css';
+	      link.rel = 'stylesheet';
+	      link.href = fileName;
+
+	      head.appendChild(link);
+	    }
+
+	    addCss('https://rawgit.com/ceseale/opendnsblog-assets/newblog/bundle.mini.css');
+
 	    var dropElement = document.getElementById('drop-container');
 	    var appContainer = document.getElementById('container');
 
@@ -12217,7 +12231,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { style: { display: 'flex', color: 'white', width: this.props.width, bottom: 0, right: 0, position: 'fixed', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } },
+	                    { style: { display: 'flex', color: 'white', width: window.innerWidth, bottom: 0, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } },
 	                    _react2.default.createElement(
 	                        'span',
 	                        null,
@@ -12234,7 +12248,7 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            null,
-	                            ' Hello fdas;lfkjadfljd flkaj fl;kajds flkjasd flj asldkfj alsdkjf lasd kjchsdlkjfhsadlkjfhadslf daslf dasflk asdfl adslkjf adhslkf dalskjf ahdlskfjhadskfhdsjf adshflkfhlskjf asdlkjf lksd falsdkfjhadklsfjads lkjfhadsjf asdlkf adslk fkaljsd faklsd fkasdj fhlksda fdsajfkl sadjf ksadjhf laksdjfh lakff'
+	                            ' Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What\'s interesting here is one of our domain\'s neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you\'ll notice more as we increase the depth.'
 	                        )
 	                    )
 	                )
