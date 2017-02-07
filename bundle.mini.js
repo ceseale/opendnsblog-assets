@@ -11002,7 +11002,9 @@
 	    var appContainer = document.getElementById('container');
 
 	    var app = function app(shouldRemove, data, noBlur) {
-	      _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: window.innerWidth - 188, height: window.innerHeight, blur: false, depth: data ? null : 3, data: data || _freeppstop2.default }), appContainer);
+
+	      var width = document.getElementsByClassName('entry-content')[0].clientWidth;
+	      _reactDom2.default.render(_react2.default.createElement(_ForceDirectedGraph2.default, { width: width - 188, height: window.innerHeight - 200, blur: false, depth: data ? null : 3, data: data || _freeppstop2.default }), appContainer);
 	    };
 
 	    app();
@@ -12231,7 +12233,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { style: { display: 'flex', color: 'white', width: window.innerWidth, bottom: 0, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } },
+	                    { style: { display: 'flex', color: 'white', width: '100%', bottom: 210, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } },
 	                    _react2.default.createElement(
 	                        'span',
 	                        null,

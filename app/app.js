@@ -32,8 +32,10 @@ let App = {
       const appContainer = document.getElementById('container');
 
       const app = (shouldRemove, data, noBlur) => {
+
+        const width = document.getElementsByClassName('entry-content')[0].clientWidth;
         ReactDOM.render(
-            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} blur={false} depth={data ? null : 3} data={data || demodata} />,
+            <ForceGraph width={width - 188} height={window.innerHeight - 200} blur={false} depth={data ? null : 3} data={data || demodata} />,
             appContainer
         );
       }

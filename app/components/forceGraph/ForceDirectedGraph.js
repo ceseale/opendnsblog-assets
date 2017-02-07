@@ -688,7 +688,7 @@ class ForceDirectedGraph extends React.Component {
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
-              <div style={{ display: 'flex', color: 'white', width: window.innerWidth, bottom: 0, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ display: 'flex', color: 'white', width: '100%', bottom: 210, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span>View By Depth</span>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
