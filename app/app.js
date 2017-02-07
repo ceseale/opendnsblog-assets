@@ -18,30 +18,12 @@ let App = {
       const appContainer = document.getElementById('container');
 
       const app = (shouldRemove, data, noBlur) => {
-        let blur = noBlur === false ? false : true;
-
-        if (shouldRemove === true) {
-          removeUploader();
-          ReactDOM.unmountComponentAtNode(appContainer);
-          blur = false;
-        }
-
         ReactDOM.render(
-            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} blur={blur} depth={data ? null : 3} data={data || demodata} />,
+            <ForceGraph width={window.innerWidth - 188} height={window.innerHeight} blur={false} depth={data ? null : 3} data={data || demodata} />,
             appContainer
         );
       }
-      
-      const removeUploader = () => {        
-        ReactDOM.unmountComponentAtNode(dropElement);
-        dropElement.remove();
-        app(null, null, false);
-      }
-
-      ReactDOM.render(
-          <Upload apprunner={app} removeSelf={removeUploader} />,
-          dropElement
-      );
+    
 
       app();
 

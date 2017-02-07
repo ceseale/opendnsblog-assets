@@ -678,13 +678,8 @@ class ForceDirectedGraph extends React.Component {
             depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? depth : progress}</DPLButton>)
         }
 
-        let demoData = [];
 
-        var files = ['194856176', 'clickherenowpw', 'freeppstop', 'jdsbrainwavecom', 'wwwdtsedgecom', 'yarblru']
-        for (let i = 0; i < files.length; i++) {
-            const name = files[i];
-            demoData.push(<DPLButton style={{ backgroundColor: this.state.currentDemo === name ? '#35466e' : null, margin: 5, padding: 0 }} onClick={() => {this.changeDemo(name)}}>{name}</DPLButton>)
-        }
+
 
         return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', filter: this.props.blur ? 'blur(3px)' : 'blur(0px)' }}>
@@ -695,18 +690,12 @@ class ForceDirectedGraph extends React.Component {
               </div>
               <div style={{ display: 'flex', color: 'white', width: this.props.width, bottom: 0, right: 0, position: 'fixed', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span>View By Depth</span>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%', padding: 10 }}>
-                    {depthButtons}
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, backgroundColor: 'black' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
+
+                    <div> Hello fdas;lfkjadfljd flkaj fl;kajds flkjasd flj asldkfj alsdkjf lasd kjchsdlkjfhsadlkjfhadslf daslf dasflk asdfl adslkjf adhslkf dalskjf ahdlskfjhadskfhdsjf adshflkfhlskjf asdlkjf lksd falsdkfjhadklsfjads lkjfhadsjf asdlkf adslk fkaljsd faklsd fkasdj fhlksda fdsajfkl sadjf ksadjhf laksdjfh lakff</div>
                 </div>
               </div>
-
-              <div style={{ display: 'flex', color: 'white', width: '188px', bottom: 0, left: 0, position: 'fixed', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <span>Datasets Available</span>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', width: '79%', padding: 10 }}>
-                    {demoData}
-                </div>
-              </div>
-
             </div>
         );
     }

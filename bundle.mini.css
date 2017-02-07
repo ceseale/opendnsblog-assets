@@ -1,1 +1,150 @@
-body{margin:0}body,html{background-color:#000}#drop-container{z-index:100;width:100vw;height:100vh;background-color:rgba(0,0,0,.7);position:fixed;display:flex;align-items:center;justify-content:center}#container{position:fixed}.dpl-spinner-cirle{width:70px;height:70px}#tree-container>ul{background-color:#000!important;height:340px;width:760px;overflow:auto}.property-name{font-size:10px}.vis-containerNo canvas{cursor:crosshair;background-color:#000}.fgraph-button{text-align:center;width:86%;background-color:#228b22;border-radius:10px;color:#fff;padding:.5em;margin:5px;text-decoration:none;opacity:.5;cursor:pointer}.fgraph-button.active,.fgraph-button:focus,.fgraph-button:hover{opacity:1}#gui{position:relative;top:-760px}#graph-container,#tree-container{justify-content:center}#graph-container svg{cursor:crosshair}#globe-container{justify-content:center}#globe-container canvas{cursor:crosshair}.progress-line,.progress-line:before{height:3px;width:100%;margin:0}.progress-line{background-color:#b3d4fc;display:flex}.progress-line:before{background-color:#3f51b5;content:'';-webkit-animation:running-progress 2s cubic-bezier(.4,0,.2,1) infinite;animation:running-progress 2s cubic-bezier(.4,0,.2,1) infinite}@-webkit-keyframes running-progress{0%{margin-left:0;margin-right:100%}50%{margin-left:25%;margin-right:0}to{margin-left:100%;margin-right:0}}@keyframes running-progress{0%{margin-left:0;margin-right:100%}50%{margin-left:25%;margin-right:0}to{margin-left:100%;margin-right:0}}.columnchart{flex-direction:column;width:357px;height:404px}.columnchart,.rowchart{display:flex;align-items:center}.rowchart{flex-direction:row;justify-content:center}blockquote{text-align:center}.menu-btn-text___1jFiu{color:#fff!important}.padded-typeahead-search-wrapper___3X70I{width:162px;height:238px;text-overflow:ellipsis!important;padding:0!important;overflow-x:hidden;overflow-y:auto}.typeahead-value-list___27bgq{padding:0}.search-icon___39jC2{display:none!important}.search-input-wrapper___29RIZ{padding-left:11px}.animated-input-label___3EFd3{font-size:.9em}
+body {
+  margin: 0;
+  background-color: black; }
+
+html {
+  background-color: black; }
+
+#drop-container {
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+#container {
+  position: fixed; }
+
+.dpl-spinner-cirle {
+  width: 70px;
+  height: 70px; }
+
+#tree-container > ul {
+  background-color: black !important;
+  height: 340px;
+  width: 760px;
+  overflow: auto; }
+
+.property-name {
+  font-size: 10px; }
+
+.vis-containerNo canvas {
+  cursor: crosshair;
+  background-color: black; }
+
+.fgraph-button {
+  text-align: center;
+  width: 86%;
+  background-color: ForestGreen;
+  border-radius: 10px;
+  color: white;
+  padding: .5em;
+  margin: 5px;
+  text-decoration: none;
+  opacity: .5;
+  cursor: pointer; }
+
+.fgraph-button:focus,
+.fgraph-button:hover {
+  opacity: 1; }
+
+.fgraph-button.active {
+  opacity: 1; }
+
+#gui {
+  position: relative;
+  top: -760px; }
+
+#tree-container {
+  justify-content: center; }
+
+#graph-container {
+  justify-content: center; }
+  #graph-container svg {
+    cursor: crosshair; }
+
+#globe-container {
+  justify-content: center; }
+  #globe-container canvas {
+    cursor: crosshair; }
+
+.progress-line, .progress-line:before {
+  height: 3px;
+  width: 100%;
+  margin: 0; }
+
+.progress-line {
+  background-color: #b3d4fc;
+  display: -webkit-flex;
+  display: flex; }
+
+.progress-line:before {
+  background-color: #3f51b5;
+  content: '';
+  -webkit-animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+
+@-webkit-keyframes running-progress {
+  0% {
+    margin-left: 0px;
+    margin-right: 100%; }
+  50% {
+    margin-left: 25%;
+    margin-right: 0%; }
+  100% {
+    margin-left: 100%;
+    margin-right: 0; } }
+
+@keyframes running-progress {
+  0% {
+    margin-left: 0px;
+    margin-right: 100%; }
+  50% {
+    margin-left: 25%;
+    margin-right: 0%; }
+  100% {
+    margin-left: 100%;
+    margin-right: 0; } }
+
+.columnchart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 357px;
+  height: 404px; }
+
+.rowchart {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center; }
+
+blockquote {
+  text-align: center; }
+
+/* Chnaging DPL components */
+.menu-btn-text___1jFiu {
+  color: white !important; }
+
+.padded-typeahead-search-wrapper___3X70I {
+  width: 162px;
+  height: 238px;
+  text-overflow: ellipsis !important;
+  padding: 0px !important;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+.typeahead-value-list___27bgq {
+  padding: 0; }
+
+.search-icon___39jC2 {
+  display: none !important; }
+
+.search-input-wrapper___29RIZ {
+  padding-left: 11px; }
+
+.animated-input-label___3EFd3 {
+  font-size: .9em; }
