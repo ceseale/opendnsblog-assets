@@ -1,12 +1,3 @@
-body {
-  margin: 0;
-  background-color: black;
-}
-
-html {
-  background-color: black;
-}
-
 #drop-container {
   z-index: 100;
   width: 100vw;
@@ -16,10 +7,6 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-#container {
-  position: fixed;
 }
 
 .dpl-spinner-cirle {

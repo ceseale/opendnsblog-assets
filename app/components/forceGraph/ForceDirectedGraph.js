@@ -682,18 +682,20 @@ class ForceDirectedGraph extends React.Component {
 
 
         return (
+            <div>
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', filter: this.props.blur ? 'blur(3px)' : 'blur(0px)' }}>
               { this.props.hasMenu === false ? null : <Menu width={'188px'} clusters={clustersNav} onInputChange={this.onSearch.bind(this)} search={searchBox} height={this.props.height} buttons={filerButtons} data={this.data} focusedNodeCount={this.focusedNodeCount} focusedEdgeCount={this.focusedEdgeCount}/> }
               <div style={{ cursor: 'crosshair' }}>
                 <canvas className={'graphContainer2'} id='mainCanvas' width={this.props.width} height={this.props.height} style={{ backgroundColor: 'black', pointer: 'crosshair' }} ></canvas>
                 <canvas className={'graphHidden'} style={{ display: 'none' }} width={this.props.width} height={this.props.height}></canvas>
               </div>
-              <div style={{ display: 'flex', color: 'white', width: '100%', bottom: 210, right: 0, position: 'absolute', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            </div>
+            <div style={{ display: 'flex', color: 'white', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span>View By Depth</span>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
 
-                    <div> Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</div>
+                    <div style={{ height: 200, overflow: 'auto' }}> Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</div>
                 </div>
               </div>
             </div>

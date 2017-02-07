@@ -35,7 +35,7 @@ let App = {
 
         const width = document.getElementsByClassName('entry-content')[0].clientWidth;
         ReactDOM.render(
-            <ForceGraph width={width - 188} height={window.innerHeight - 200} blur={false} depth={data ? null : 3} data={data || demodata} />,
+            <ForceGraph width={width - 208} height={window.innerHeight - 200} blur={false} depth={data ? null : 3} data={data || demodata} />,
             appContainer
         );
       }
