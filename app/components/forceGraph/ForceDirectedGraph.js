@@ -678,8 +678,16 @@ class ForceDirectedGraph extends React.Component {
             depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? depth : progress}</DPLButton>)
         }
 
-
-
+        let text = null;
+        if (this.state.currentDepth === 1) {
+            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+        } else if (this.state.currentDepth === 2) {
+            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+        } else if (this.state.currentDepth === 3) {
+            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+        } else if (this.state.currentDepth === 4) {
+            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+        }
 
         return (
             <div>
@@ -695,7 +703,7 @@ class ForceDirectedGraph extends React.Component {
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
 
-                    <div style={{ height: 200, overflow: 'auto' }}> Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</div>
+                    <div style={{ height: 200, overflow: 'auto' }}>text</div>
                 </div>
               </div>
             </div>
