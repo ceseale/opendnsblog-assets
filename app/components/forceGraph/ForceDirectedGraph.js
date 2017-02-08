@@ -573,8 +573,7 @@ class ForceDirectedGraph extends React.Component {
         this.focusNeighborhood(null);
         this.changeFocus();
         this.setState({ currentDepth: depth, lastFocus: null });
-        document.getElementById('depthcontent').scrollTo(0, 0);
-
+        document.getElementById('depthcontent').scrollTop = 0;
     }
 
     setPositionData(depth) {
