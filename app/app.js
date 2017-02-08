@@ -33,9 +33,12 @@ let App = {
 
       const app = (shouldRemove, data, noBlur) => {
 
-        const width = document.getElementsByClassName('entry-content')[0].clientWidth;
+        let width = document.getElementsByClassName('entry-content')[0].clientWidth;
+        if (window.innerWidth >= 951) {
+          width = width - 169;
+        }
         ReactDOM.render(
-            <ForceGraph width={width - 208 - 169} height={window.innerHeight - 325} blur={false} depth={data ? null : 1} data={data || demodata} />,
+            <ForceGraph width={width - 208} height={window.innerHeight - 355} blur={false} depth={data ? null : 1} data={data || demodata} />,
             appContainer
         );
       }

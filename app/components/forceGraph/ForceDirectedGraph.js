@@ -573,6 +573,7 @@ class ForceDirectedGraph extends React.Component {
         this.focusNeighborhood(null);
         this.changeFocus();
         this.setState({ currentDepth: depth, lastFocus: null });
+        document.getElementById('depthcontent').scrollTo(0, 0);
 
     }
 
@@ -679,7 +680,7 @@ class ForceDirectedGraph extends React.Component {
         for (let depth = 1; depth < this.maxDepth + 1; depth++) {
             const progress = this.state.progressAtDepth[depth];
             const isDone = progress === '100%';
-            depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? depth : progress}</DPLButton>)
+            depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? `Depth ${depth}` : progress}</DPLButton>)
         }
 
         let text = null;
@@ -703,11 +704,10 @@ class ForceDirectedGraph extends React.Component {
               </div>
             </div>
             <div style={{ display: 'flex', color: 'white', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <span>View By Depth</span>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', margin: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
 
-                    <div style={{ height: 200, overflow: 'auto', padding: 15 }}>{text}</div>
+                    <div id={'depthcontent'} style={{ height: 200, overflow: 'auto', padding: 15, paddingBottom: 0 }}>{text}</div>
                 </div>
               </div>
             </div>
