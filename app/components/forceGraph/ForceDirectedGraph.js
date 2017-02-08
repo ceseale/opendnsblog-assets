@@ -10,6 +10,10 @@ import Menu from './Menu';
 import KmeansMenuItem from '../Clustering/Kmeans';
 const throttle = require('lodash.throttle');
 const request = require('browser-request');
+import Depth1Content from './Depth1Content';
+import Depth2Content from './Depth2Content';
+import Depth3Content from './Depth3Content';
+import Depth4Content from './Depth4Content';
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
@@ -680,13 +684,13 @@ class ForceDirectedGraph extends React.Component {
 
         let text = null;
         if (this.state.currentDepth === 1) {
-            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+            text = <Depth1Content/>
         } else if (this.state.currentDepth === 2) {
-            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+            text = <Depth2Content/>
         } else if (this.state.currentDepth === 3) {
-            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+            text = <Depth3Content/>
         } else if (this.state.currentDepth === 4) {
-            text = <p>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+            text = <Depth4Content/>
         }
 
         return (
@@ -700,10 +704,10 @@ class ForceDirectedGraph extends React.Component {
             </div>
             <div style={{ display: 'flex', color: 'white', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <span>View By Depth</span>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 10, backgroundColor: 'black' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', margin: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
 
-                    <div style={{ height: 200, overflow: 'auto' }}>text</div>
+                    <div style={{ height: 200, overflow: 'auto', padding: 15 }}>{text}</div>
                 </div>
               </div>
             </div>
