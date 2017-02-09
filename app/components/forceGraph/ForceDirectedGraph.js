@@ -14,6 +14,7 @@ import Depth1Content from './Depth1Content';
 import Depth2Content from './Depth2Content';
 import Depth3Content from './Depth3Content';
 import Depth4Content from './Depth4Content';
+import { ToastNotification } from '@opendns/dpl-notifications';
 
 class ForceDirectedGraph extends React.Component {
     constructor(props) {
@@ -473,15 +474,24 @@ class ForceDirectedGraph extends React.Component {
             } 
 
             if (type !== 'Blocked Domains' && !(type.indexOf('match') > -1) ) {
+                
+                let countFilterMatch = 0; // counter for button fillters 
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
                     if (node.type === type) {
+                        countFilterMatch ++;
                         this.focusOn.push(node.id);
                         changeNodeColors(node, color);
                     } else {
                         changeNodeColors(node, 'rgba(5, 159, 217, .5)');
                     }
                 }
+
+                if (!countFilterMatch) {
+                    console.log('blah')
+                    this.setState({ showToast: true, notificationMessage: `The graph at this depth doesn't have any hashes yet! Try another filter.` });
+                }
+
             } else if (type === 'Blocked Domains') {
                 for (let i = 0; i < nodes.length; i++) {
                     let node = nodes[i];
@@ -710,6 +720,7 @@ class ForceDirectedGraph extends React.Component {
                     <div id={'depthcontent'} style={{ height: 200, overflow: 'auto', padding: 15, paddingBottom: 0 }}>{text}</div>
                 </div>
               </div>
+              <ToastNotification type="temporary" milliseconds={3750} showNotification={this.state.showToast} text={this.state.notificationMessage} afterHideCallback={()=> { this.setState({ showToast: false }); }} />
             </div>
         );
     }

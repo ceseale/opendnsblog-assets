@@ -36,6 +36,7 @@
     "@opendns/dpl-formfields": "^5.2.2",
     "@opendns/dpl-links": "^5.2.2",
     "@opendns/dpl-menus": "^5.2.2",
+    "@opendns/dpl-notifications": "^7.0.2",
     "@opendns/dpl-pills": "^5.2.2",
     "@opendns/dpl-scss": "^5.2.2",
     "@opendns/dpl-search": "^5.2.2",
