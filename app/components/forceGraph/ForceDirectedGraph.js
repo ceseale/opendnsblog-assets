@@ -488,7 +488,6 @@ class ForceDirectedGraph extends React.Component {
                 }
 
                 if (!countFilterMatch) {
-                    console.log('blah')
                     this.setState({ showToast: true, notificationMessage: `The graph at this depth doesn't have any hashes yet! Try another filter.` });
                 }
 

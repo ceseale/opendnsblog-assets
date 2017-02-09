@@ -38,9 +38,10 @@ let App = {
           width = width - 169;
         }
 
-        let visheight = window.innerHeight - 450;
-        if (window.innerHeight - 450 <= 592) {
-          visheight = 592;
+        let visheight = window.innerHeight - 320;
+        if ((window.innerHeight - 320) <= 284) {
+          console.log('in')
+          visheight = 284;
         }
 
         ReactDOM.render(
