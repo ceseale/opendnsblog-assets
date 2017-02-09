@@ -38,9 +38,8 @@ let App = {
           width = width - 169;
         }
 
-        let visheight = window.innerHeight - 320;
-        if ((window.innerHeight - 320) <= 284) {
-          console.log('in')
+        let visheight = window.innerHeight - 420;
+        if ((window.innerHeight - 420) <= 284) {
           visheight = 284;
         }
 
