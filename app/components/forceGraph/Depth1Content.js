@@ -4,7 +4,7 @@ class Depth1Content extends React.Component {
     render() {
         return (
             <div style={{ color: 'white' }}>
-              <p style={{ color: 'white' }}>Edges and nodes are created using the properties of our starting domain or depth 0. The depth of a graph describes its size in relation to the starting node. Graphs, even at small depths, act as an intuitive way to visualize these properties. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth.</p>
+              <p style={{ color: 'white' }}>Let's start by exploring the graph at depth 1. The depth of a graph describes its size in relation to the starting node, in this case freepps[.]top. Graphs, even at small depths, act as an intuitive way to visualize relationships in our network. In this case, freepps[.]top has 14 direct neighbors, made up of domains, IPs, and emails. What's interesting here is one of our domain's neighbors is a subdomain, mail.freepps[.]top. Malicious domains create subdomains that help them spread and is a technique used by this domain as you'll notice more as we increase the depth. Below you can see some of the different filters highlighted. You can highlight nodes by clicking one of the filters above.</p>
               <div className="rowchart">
                 <div className="columnchart">
                 <img style={{ width: 270, height: 270 }} src="//rawgit.com/ceseale/opendnsblog-assets/newblog/app/components/forceGraph/images/blockeddomainsdepth1.png"></img>

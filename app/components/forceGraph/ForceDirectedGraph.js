@@ -19,6 +19,7 @@ class ForceDirectedGraph extends React.Component {
     constructor(props) {
         super(props);
         this.initData(this.props.data);
+        this.initScalesForBlog = { 2: 0.363493, 3: 0.12259 }
     }
 
     initData(data) {
@@ -679,7 +680,7 @@ class ForceDirectedGraph extends React.Component {
         for (let depth = 1; depth < this.maxDepth + 1; depth++) {
             const progress = this.state.progressAtDepth[depth];
             const isDone = progress === '100%';
-            depthButtons.push(<DPLButton style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? `Depth ${depth}` : progress}</DPLButton>)
+            depthButtons.push(<DPLButton key={depth} style={{ backgroundColor: this.state.currentDepth === depth ? '#35466e' : null}} onClick={() => {this.onChangeDepth(depth)}}>{isDone ? `Depth ${depth}` : progress}</DPLButton>)
         }
 
         let text = null;
