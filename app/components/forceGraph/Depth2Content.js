@@ -4,7 +4,7 @@ class Depth1Content extends React.Component {
     render() {
         return (
             <div style={{ color: 'white' }}>
-              <p style={{ color: 'white' }}>Now, our graph is getting more interesting and has exposed some associated samples from Cisco ThreatGrid. ThreatGrid provides behavioral indicators on files hosted by malicious domains. ThreatGrid detonates files in a sandboxed environment and associates a SHA256 hash with the file along with information about the files malicious behavior. At this depth, some of the domain's neighbors are associated samples. We've also exposed another malicious subdomain, android.freepps[.]top. You can check them out below or filter them up above.</p>
+              <p style={{ color: 'white' }}>Now, our graph is getting more interesting and has exposed some associated samples from Cisco ThreatGrid. ThreatGrid provides behavioral indicators on files hosted by malicious domains. ThreatGrid detonates files in a sandboxed environment and associates a SHA256 hash with files along with information about malicious behaviors. At this depth, some of the domain's neighbors are associated samples. We've also exposed another malicious subdomain, android.freepps[.]top. You can check them out below or filter them up above.</p>
 
 
 <div className="rowchart">

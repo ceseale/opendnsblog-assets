@@ -5,7 +5,7 @@ class Depth1Content extends React.Component {
         return (
             <div style={{ color: 'white' }}>
             <p style={{ color: 'white' }}>The last depth we'll investigate is depth 4. The graph at this point is huge. (You'll have to zoom out to see the whole graph in its glory). This is great because we can start to see more interesting trends and use our toolset to learn more about them. Larger graphs allow you to view massive trends as domains at this depth can easily have over 6000 nodes. Below are some interesting trends that continue from depth 3. They show that k-means does a good job at separating meaningful groups of nodes as graphs get more complex.
-            In this case, it clusters the .ru domains and hashes well enough for an analyst to take interest in the nodes in the area.</p>
+            In this case, it clusters the .ru domains and hashes well enough for an analyst to take interest in nodes in that area.</p>
 
             <div className="rowchart">
                 <div className="columnchart">
