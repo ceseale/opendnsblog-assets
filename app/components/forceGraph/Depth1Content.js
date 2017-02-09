@@ -13,7 +13,7 @@ class Depth1Content extends React.Component {
 
                 <div className="columnchart">
                 <img style={{ width: 270, height: 270 }} src="//cdn.rawgit.com/ceseale/opendnsblog-assets/8381886007d9dd45b27feb17c9b02abb7b7ead18/app/components/forceGraph/images/ipsdomaindepth1.png"></img>
-                <blockquote>Ips at depth 1 for freepps[.]top</blockquote>
+                <blockquote>IPs at depth 1 for freepps[.]top</blockquote>
                 </div>
               </div>
 
