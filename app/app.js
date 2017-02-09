@@ -38,7 +38,7 @@ let App = {
           width = width - 169;
         }
         ReactDOM.render(
-            <ForceGraph width={width - 208} height={window.innerHeight - 375} blur={false} depth={data ? null : 1} data={data || demodata} />,
+            <ForceGraph width={width - 208} height={window.innerHeight - 450} blur={false} depth={data ? null : 1} data={data || demodata} />,
             appContainer
         );
       }
