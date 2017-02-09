@@ -26,7 +26,7 @@ let App = {
           head.appendChild(link)
         } 
 
-        addCss('https://rawgit.com/ceseale/opendnsblog-assets/newblog/bundle.mini.css')
+        addCss('https://cdn.rawgit.com/ceseale/opendnsblog-assets/6806091ffae325d54fbb71c05ac8f682cecfa220/bundle.mini.css')
 
       const dropElement = document.getElementById('drop-container');
       const appContainer = document.getElementById('container');

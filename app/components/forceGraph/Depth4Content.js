@@ -9,19 +9,19 @@ class Depth1Content extends React.Component {
 
             <div className="rowchart">
                 <div className="columnchart">
-              <img style={{ width: 270, height: 270 }} src="//rawgit.com/ceseale/opendnsblog-assets/newblog/app/components/forceGraph/images/depth5km.png"></img>
+              <img style={{ width: 270, height: 270 }} src="https://cdn.rawgit.com/ceseale/opendnsblog-assets/8381886007d9dd45b27feb17c9b02abb7b7ead18/app/components/forceGraph/images/depth5km.png"></img>
                   <blockquote>Graph at depth 4 for freepps[.]top clustered using k-means with k=7</blockquote>
                 </div>
 
                 <div className="columnchart">
-              <img style={{ width: 270, height: 270 }} src="//rawgit.com/ceseale/opendnsblog-assets/newblog/app/components/forceGraph/images/depth4ru.png"></img>
+              <img style={{ width: 270, height: 270 }} src="https://cdn.rawgit.com/ceseale/opendnsblog-assets/8381886007d9dd45b27feb17c9b02abb7b7ead18/app/components/forceGraph/images/depth4ru.png"></img>
                   <blockquote>All the nodes at depth 4 that contain .ru</blockquote>
                 </div>
             </div>
 
             <div className="rowchart">
               <div className="columnchart">
-              <img style={{ width: 270, height: 270 }} src="//rawgit.com/ceseale/opendnsblog-assets/newblog/app/components/forceGraph/images/depth4hash.png"></img>
+              <img style={{ width: 270, height: 270 }} src="https://cdn.rawgit.com/ceseale/opendnsblog-assets/8381886007d9dd45b27feb17c9b02abb7b7ead18/app/components/forceGraph/images/depth4hash.png"></img>
                 <blockquote>All the nodes at depth 4 that are hashes</blockquote>
               </div>
             </div>
