@@ -37,8 +37,14 @@ let App = {
         if (window.innerWidth >= 951) {
           width = width - 169;
         }
+
+        let visheight = window.innerHeight - 450;
+        if (window.innerHeight - 450 <= 592) {
+          visheight = 592;
+        }
+
         ReactDOM.render(
-            <ForceGraph width={width - 208} height={window.innerHeight - 450} blur={false} depth={data ? null : 1} data={data || demodata} />,
+            <ForceGraph width={width - 208} height={visheight} blur={false} depth={data ? null : 1} data={data || demodata} />,
             appContainer
         );
       }
