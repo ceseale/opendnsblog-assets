@@ -40,7 +40,7 @@ let App = {
 
         let visheight = window.innerHeight - 420;
         if ((window.innerHeight - 420) <= 284) {
-          visheight = 284;
+          visheight = 298;
         }
 
         ReactDOM.render(
