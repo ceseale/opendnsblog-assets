@@ -15,7 +15,7 @@ class Depth1Content extends React.Component {
 
   <div className="columnchart">
   <img style={{ width: 270, height: 270 }} src="https://cdn.rawgit.com/ceseale/opendnsblog-assets/8381886007d9dd45b27feb17c9b02abb7b7ead18/app/components/forceGraph/images/hashesdepth2.png"></img>
-<blockquote>Hashs at depth 2 for freepps[.]top</blockquote>
+<blockquote>Hashes at depth 2 for freepps[.]top</blockquote>
   </div>
 </div>
 
