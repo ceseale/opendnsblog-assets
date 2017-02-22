@@ -716,7 +716,7 @@ class ForceDirectedGraph extends React.Component {
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', margin: 10, backgroundColor: 'black' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>{depthButtons}</div>
 
-                    <div id={'depthcontent'} style={{ height: 200, overflow: 'auto', padding: 15, paddingBottom: 0 }}>{text}</div>
+                    <div id={'depthcontent'} style={{ overflow: 'auto', padding: 15, paddingBottom: 0 }}>{text}</div>
                 </div>
               </div>
               <ToastNotification type="temporary" milliseconds={3750} showNotification={this.state.showToast} text={this.state.notificationMessage} afterHideCallback={()=> { this.setState({ showToast: false }); }} />
